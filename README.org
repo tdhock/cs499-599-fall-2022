@@ -1,6 +1,6 @@
-Computer Science CS 499/599 at Northern Arizona University, Spring 2022
+Computer Science CS 499/599 at Northern Arizona University, Fall 2022
 
-Topic: Advanced Intelligent Systems (Deep Learning)
+Topic: Deep Learning
 
 Dates: Aug 29, 2022-Dec 16, 2022
 
