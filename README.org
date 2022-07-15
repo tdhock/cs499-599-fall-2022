@@ -45,7 +45,7 @@ that week, 11:59PM.
   - [[file:slides/04-linear-models.pdf][Slides]], [[http://ml.nau.edu/viz/2022-02-02-gradient-descent-regression/][interactive figure showing gradient descent for regression]].
   - Reading [[https://www.deeplearningbook.org/contents/ml.html][DL5]], [[https://www.deeplearningbook.org/contents/numerical.html][DL4.3]]. 
 - Sep 26, week 5 review and exam.
-  - Exam is 10 Feb 2022, in class. During the exam you are allowed to
+  - Exam is TODO DATE, in class. During the exam you are allowed to
     use one page of handwritten notes.
   - [[file:exams/exam1_practice.pdf][Practice exam PDF]].
 - Oct 3, [[file:homeworks/06-backprop.org][Homework week 6]]:
@@ -53,28 +53,28 @@ that week, 11:59PM.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]].
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6]].
 - Oct 10, [[file:homeworks/07-auto-diff.org][Homework week 7]]:
-  automatic differentiation for linear model.
+  implementing an automatic differentiation system.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Automatic differentiation.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.5]].
-- Oct 17, [[file:homeworks/08-torch-mlp.org][Homework week 8]]:
-  implementing automatic differentiation for fully connected neural
-  networks.
-  - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Torch.
+- Oct 17, regularizing neural networks.
+  - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
 - Oct 24, week 9 review and exam.
-  - Exam is 10 Mar 2022, in class. During the exam you are allowed to
+  - Exam is TODO DATE, in class. During the exam you are allowed to
     use one page of handwritten notes.
   - [[file:exams/spring_2022_mid_term_exam_2_practice.pdf][Practice exam 2 PDF]].
-- Oct 31, Homework week 10: regularizing neural networks.
-  - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
-- Nov 7, Homework week 11: optimization.
+- Oct 31, Homework week 10: optimization.
   - Reading [[https://www.deeplearningbook.org/contents/optimization.html][DL8]].
-- Nov 14, Homework week 12: convolutional networks.
+- Nov 7, Homework week 11: convolutional networks.
   - Reading [[https://www.deeplearningbook.org/contents/convnets.html][DL9]].
+- Nov 14, Homework week 12: learning text embeddings.
 - Nov 21, Homework week 13: recurrent networks.
   - Reading [[https://www.deeplearningbook.org/contents/rnn.html][DL10]].
-- Nov 28, Homework week 14: Residual learning or reinforcement learning?
-- Nov 5, reading week, exam review Thurs Apr 28.
-- Final exam, TODO
+- Nov 28, Homework week 14: interpretability via attention mechanism.
+  - Readings: [[https://faculty.cc.gatech.edu/~dyang888/docs/naacl16.pdf][Yang et al, 2016]], [[https://blog.floydhub.com/gru-with-pytorch/][GRU vs LSTM]], [[https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html][PyTorch translation
+    attention tutorial using GRU]], [[https://medium.com/intel-student-ambassadors/implementing-attention-models-in-pytorch-f947034b3e66][Another attention tutorial using
+    LSTM]].
+- Nov 5, reading week, exam review TODO DATE.
+- Final exam, TODO DATE.
 
 ** Rubric for homeworks
 
