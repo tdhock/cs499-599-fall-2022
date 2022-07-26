@@ -108,6 +108,9 @@ Python documentation and introductory tutorials:
 - [[https://pyjanitor-devs.github.io/pyjanitor/][janitor]] is a python module for data cleaning and reshaping. It is
   useful for getting data into the right format for learning or
   visualization.
+- seaborn.objects is a python module for data visualization based on
+  the grammar of graphics, similar to ggplot2 in R. [[https://aeturrell.github.io/python4DS/data-visualise.html][Data Visualisation
+  chapter of Python for Data Science online book]].
 - plotnine is a python module for data visualization based on the
   grammar of graphics, similar to ggplot2 in R: [[https://plotnine.readthedocs.io/en/stable/index.html][docs]], [[tutorials]], [[https://tdhock.github.io/blog/2021/data-reshape-viz-update/][My
   2021 blog post comparing R and python libraries for data reshaping

@@ -1,0 +1,5 @@
+name: cs499f22
+channels:
+  - defaults
+dependencies:
+  - python=3.9  
