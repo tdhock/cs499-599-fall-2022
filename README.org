@@ -74,7 +74,7 @@ that week, 11:59PM.
     attention tutorial using GRU]], [[https://medium.com/intel-student-ambassadors/implementing-attention-models-in-pytorch-f947034b3e66][Another attention tutorial using
     LSTM]].
 - Dec 5, reading week, exam review TODO DATE.
-- Final exam, TODO DATE.
+- Final exam, Weds Dec 14, 8-9:30AM.
 
 ** Rubric for homeworks
 
