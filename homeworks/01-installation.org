@@ -56,7 +56,7 @@ your python code, (2) the corresponding results/output (after running
 your python code), and (3) your commentary/interpretation/answers to
 questions.
 
-** Part 2: advanced data visualization (extra credit)
+** Part 2: advanced data visualization (extra credit for CS499 undergrads, required for CS599 graduate students)
 
 These are exercises taken from
 https://rcdata.nau.edu/genomic-ml/animint2-manual/Ch02-ggplot2.html
