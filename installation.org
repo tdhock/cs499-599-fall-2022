@@ -20,7 +20,7 @@ After [[https://docs.conda.io/en/latest/miniconda.html][downloading conda]] you 
 same versions that I use, via:
 
 #+begin_src shell-script
-conda env create -f https://raw.githubusercontent.com/tdhock/cs570-spring-2022/master/environment.yml
+conda env create -f https://raw.githubusercontent.com/tdhock/cs499-599-fall-2022/master/environment.yml
 #+end_src
 
 OR (less memory usage):
