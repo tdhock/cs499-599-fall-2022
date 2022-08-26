@@ -1,1 +1,15 @@
+figure-*/
+2022*.png
+tmp.png
+zip.test.gz
 *~
+auto
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*solution.py
+.httr-oauth
