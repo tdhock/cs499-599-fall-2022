@@ -1,0 +1,72 @@
+Attention mechanism for sequence data
+
+Last week we used a recurrent neural network for text classification,
+which begs the question, which words are important for making the
+decision in each text? This week we will explore an attention
+mechanism, which the neural network can use to learn which words in
+the sequence are important.
+
+** Class: AttentionLSTM
+
+This class should define a learner with fit and predict methods,
+similar to what we did last week, but with an attention mechanism for
+prediction.
+
+** Plotting loss vs number of epochs
+
+- Load at least two binary classification data sets from torchtext
+  (IMDB, YelpReviewPolarity,
+  AmazonReviewPolarity). https://pytorch.org/text/stable/datasets.html
+  For simplicity use split="train" only (not test), and consider this
+  the full data set.
+- Create a data_dict variable which defines two different binary
+  classification data sets. You should down-sample the training data
+  for speed while testing your code.
+- Define folds and train/test splits as usual via 3-fold
+  cross-validation.
+- Count words in the training data, make a dictionary of most common
+  words, compute bag of words vectors for each observation.
+- Split train into subtrain/validation sets.
+- Run gradient descent learning with early stopping regularization
+  using LSTM.
+- Make a plot for each data set which shows loss as a function of
+  epochs. Use a different color for each set, e.g. subtrain=red,
+  validation=blue. Draw a point to emphasize the minimum of the
+  validation loss curve. Which number of epochs resulted in the best
+  validation loss for each case?
+- Your plots should show the characteristic U shape of the validation
+  loss curve, and monotonic subtrain loss curve.
+- After having learned a model for each data set, use it to predict
+  for a few examples and show the corresponding values of the
+  normalized importance weights (which should sum to 1 over the
+  sequence of words in that example). Do the words with largest value
+  make sense in terms of determining the prediction?
+
+** Test error experiment
+
+- Use similar experimental setup as previous homeworks
+  (with 3-fold CV train/test splits defined by KFold, and with
+  GridSearchCV+KNeighborsClassifier and LogisticRegressionCV), but add
+  your new algorithm to compare.
+- Make sure to run experiments on at least two text classification
+  data sets. Show a table of resulting test accuracy numbers, as well
+  as a ggplot. On the ggplot y axis there should be at least the
+  following algorithms:
+  - featureless, 
+  - GridSearchCV+KNeighborsClassifier,
+  - LogisticRegressionCV, 
+  - AttentionLSTM
+- Does your implementation get similar test accuracy as scikit-learn?
+  (it should!)
+
+** Extra credit
+
+- Implement a hierarchical attention mechanism and compare it to the
+  word-level attention mechanism
+  https://faculty.cc.gatech.edu/~dyang888/docs/naacl16.pdf
+- Compare with LSTM from last week (predicted class depends on last
+  hidden state).
+- Compare with a LSTM which derives predictions from a fixed average
+  of output states (every item in the sequence equally weighted).
+- Compare unidirectional LSTM with bidirectional LSTM.
+- Compare LSTM with GRU.

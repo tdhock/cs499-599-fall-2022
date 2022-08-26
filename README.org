@@ -50,15 +50,15 @@ that week, 11:59PM.
   - Exam is TODO DATE, in class. During the exam you are allowed to
     use one page of handwritten notes.
   - [[file:exams/exam1_practice.pdf][Practice exam PDF]].
-- Oct 3, [[file:homeworks/06-backprop.org][Homework week 6]]:
+- Oct 3, [[file:homeworks/06-torch-mlp.org][Homework week 6]]:
   training linear model and neural networks using torch.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]].
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6]].
-- Oct 10, [[file:homeworks/07-auto-diff.org][Homework week 7]]:
+- Oct 10, Homework week 7:
   implementing an automatic differentiation system.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Automatic differentiation.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.5]].
-- Oct 17, regularizing neural networks.
+- Oct 17, Homework week 8: regularizing neural networks.
   - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
 - Oct 24, week 9 review and exam.
   - Exam is TODO DATE, in class. During the exam you are allowed to

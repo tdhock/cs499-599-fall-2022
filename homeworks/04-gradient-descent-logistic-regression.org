@@ -1,0 +1,143 @@
+Gradient descent for logistic regression
+
+In this project your goal is to implement the gradient descent
+algorithm for learning a logistic regression model, and then use it
+with early stopping regularization to make predictions on several real
+data sets. There are two options, and you only need to implement one
+of the two, but you can implement both for extra credit.
+
+** Class: MyLogReg
+The goal of this exercise is to code the gradient descent algorithm
+from scratch using numpy. This class is required for both option 1 and
+2 below.
+- You should code a scikit-learn style class named MyLogReg.
+- It should have attributes max_iterations and step_size which control
+  the gradient descent algorithm.
+- Implement a fit(X=subtrain_features, y=subtrain_labels) method where
+  X is a matrix of numeric inputs (one row for each subtrain
+  observation, one column for each feature), and y is a vector of
+  binary outputs (the corresponding label for each subtrain
+  observation). If input labels are 0/1 then make sure to convert
+  labels to -1 and 1 for learning with the logistic loss. Define a
+  variable called scaled_mat which has (1) filtered/removed any zero
+  variance features, (2) scaled any other features, and (3) and an
+  extra column of ones (for learning the intercept). Initialize an
+  weight vector with size equal to the number of columns in
+  scaled_mat. Then use a for loop from 0 to max_iterations to
+  iteratively compute linear model parameters that minimize the
+  average logistic loss over the subtrain data. At the end of the
+  algorithm you should save the learned weights/intercept (on original
+  scale) as the coef_ and intercept_ attributes of the class (values
+  should be similar to attributes of LogisticRegression class in
+  scikit-learn).
+- Implement a decision_function(X) method which uses the learned
+  weights and intercept to compute a real-valued score (larger for
+  more likely to be predicted positive).
+- Implement a predict(X) method which uses np.where to threshold the
+  predicted values from decision_function, and obtain a vector of
+  predicted classes (1 if predicted value is positive, 0 otherwise).
+
+** Option 1: MyCV
+
+The MyCV class should work just like sklearn.model_selection.GridSearchCV
+(OK to use same code as last week). In other words, it should do best
+parameter selection via cross-validation for any estimator (there
+should be no code that is specific to linear models).
+- instantiation: MyCV(estimator=MyLogReg(step_size=0.1),
+  param_grid=[{'max_iterations':max_it} for max_it in [1, 10, 100, 1000]]).
+- fit(X=train_features, y=train_labels) should compute the best number
+  of iterations using K-fold cross-validation, with the number of folds
+  defined by the cv parameter. Begin by assigning random fold ID
+  numbers to each observation. There should be for loops over the K
+  subtrain/validation splits, and the hyper-parameter dictionaries in
+  param_grid. For each, use fit(*subtrain_data) and
+  predict(validation_features) methods of the estimator, then save the
+  validation accuracy. For each hyper-parameter dictionary in
+  param_grid compute the mean validation accuracy over the K
+  splits. Finally, maximize the mean validation accuracy to determine a best
+  parameter dictionary to save in the best_params_ attribute. Finally
+  use setattr with the key in best_params_ to set the corresponding
+  attribute of the estimator.
+- predict(X=test_features) runs estimator.predict(X=test_features) --
+  the best number of iterations should already have been set as an
+  attribute of estimator, at the end of the fit method.
+
+After having coded these two classes, run MyCV+MyLogReg on both the
+spam and zip data sets. Make a plot of mean validation error rate as a
+function of number of iterations (note that error rate is 1-accuracy
+rate, both vary between 0 and 1). For full credit your plot should
+show the expected U shape (if it does not, then increase the number of
+max_iterations values in param_grid). According to your plot, what is
+the best number of iterations for spam? For zip?
+
+** Option 2: MyLogRegCV
+
+The MyLogRegCV class should do a subtrain/validation split and compute
+the validation loss for each iteration of the gradient descent. This
+method should be faster than MyLogReg+MyCV.
+- You will need to modify MyLogReg so that it computes the logistic
+  loss with respect to the validation set (stored as an attribute or
+  an optional argument of the fit method).
+- It should implement its own cross-validation for determining the
+  best number of iterations (should not be used with MyCV).
+- The fit(X=train_features, y=train_labels) method should input the
+  entire train set, instead of the subtrain set. It should begin by
+  splitting the data set into subtrain/validation sets. Then it should
+  run MyLogReg().fit(X=subtrain_features, y=subtrain_labels), but in
+  each iteration of the gradient descent for loop, you should compute
+  the logistic loss with respect to the validation set. At the end the
+  validation loss values for each iteration should be stored as a
+  DataFrame in the scores_ attribute, and the best_iterations
+  hyper-parameter attribute of the class should be set based on the
+  number of iterations which minimized the validation loss. Finally
+  you can run
+  MyLogReg(max_iterations=best_iterations).fit(X=train_features,
+  train_labels) and store the instance as an attribute, self.lr.
+- The decision_function/predict(X=test_features) methods should just
+  call the corresponding methods of self.lr.
+
+After having coded this class, run MyLogRegCV on both the spam and zip
+data sets. Make a plot of validation loss as a function of number of
+iterations. For full credit your plot should show the expected U shape
+(if it does not, then you may need to increase max_iterations or
+increase/decrease step_size). According to your plot, what is the best
+number of iterations for spam? For zip?
+
+** Experiments/application
+
+- Use the same experimental setup as last week (with 3-fold CV
+  train/test splits defined by KFold, and with
+  GridSearchCV+KNeighborsClassifier and LogisticRegressionCV), but add
+  your new algorithm to compare. 
+- Make sure to run experiments on both spam and zip data, and show a
+  table of resulting test accuracy numbers, as well as a ggplot like
+  last week. When you compute accuracy make sure that your
+  labels/predictions are both either 0/1 or -1/1! If predictions are
+  -1/1 and labels are 0/1 then all negative labels will be falsely
+  incorrect! On the ggplot y axis there should be at least the
+  following algorithms: featureless,
+  GridSearchCV+KNeighborsClassifier, LogisticRegressionCV, your new
+  algorithm (either MyLogRegCV or MyLogReg+MyCV).
+- Does your implementation get similar test accuracy as scikit-learn?
+  (it should!)
+  
+** Extra credit
+
+- Implement both options instead of just one, and include both on your
+  test accuracy plot. Which is more accurate, or are they about the same?
+- In addition to plotting the validation loss/error as a function of
+  the number of iterations, plot accuracy and/or Area Under the ROC
+  Curve (AUC). Does the minimum of validation loss/error happen at the
+  same number of iterations as the maximum of accuracy and/or AUC?
+  
+** FAQ
+
+- My code is too slow! If your code is too slow then I would suggest
+  trying to optimize it -- you can replace for loops with
+  matrix-vector operations to get substantial speedups.
+- What values should I use for the number of iterations and step size?
+  I can't tell you what values to use, but you need to try several
+  values until you see the subtrain log loss always going down, and the
+  validation should be U-shaped (go down and then up again). You can
+  use different values for each data set.
+
