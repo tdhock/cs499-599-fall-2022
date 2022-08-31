@@ -84,6 +84,9 @@ Extra credit:
 - if you compute area under the ROC curve (AUC) and include
   that as another evaluation metric (in a separate panel/plot) to
   compare the test accuracy of the algorithms.
+- If you do an analysis of how many train data you need to get optimal
+  prediction accuracy. Use a for loop over train data sizes, 10, 50,
+  100, etc. Plot y=test accuracy as a function of x=train data size.
   
 ** FAQ
 
