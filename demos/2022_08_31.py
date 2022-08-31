@@ -1,6 +1,14 @@
+# python modules we need for this week.
 import pandas as pd
+import plotnine as p9
+
+# try to import the other python modules needed for this class.
+import torch
+import torchtext
+import sklearn
+
 zip_df = pd.read_csv(
-    "~/teaching/cs570-spring-2022/data/zip.test.gz",
+    "../data/zip.test.gz",
     header=None,
     sep=" ")
 
@@ -24,11 +32,11 @@ zip_mat.shape
 
 import numpy as np
 
-# BAD 16 repeated
+# 16 repeated, BAD/-5 on general usage rubric.
 index_vec = np.arange(16)
 np.repeat(index_vec, 16)
 
-# GOOD
+# GOOD, define n_pixels to hold repeated number.
 n_pixels = 16
 index_vec = np.arange(n_pixels)
 image_index = 0
@@ -40,8 +48,6 @@ one_image_df = pd.DataFrame({
 })
 one_image_df
 
-import plotnine as p9
-
 gg = p9.ggplot()+\
     p9.geom_raster(
         p9.aes(
@@ -50,9 +56,15 @@ gg = p9.ggplot()+\
             fill="intensity",
             ),
         data=one_image_df)
-gg.save("image_plotnine.png")
+gg.save("2022_08_31.png")
 
-import torch
-import torchtext
-import sklearn
 
+# another python plotting module is seaborn, which does not yet
+# implement much of the functionality we need, for example geom tile
+# or rect.
+import seaborn.objects as so
+plot_obj = so.Plot().add(
+    mark=THERE IS NO EQUIVALENT OF GEOM_RECT YET https://seaborn.pydata.org/nextgen/
+    data=one_image_df, 
+    x="col", y="row", fill="intensity")
+so.Plot(mpg, x="displ", y="hwy", color="drv").add(so.Line(), so.Agg()).add(so.Scatter())

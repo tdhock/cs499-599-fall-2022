@@ -140,6 +140,8 @@ Python documentation and introductory tutorials:
   But in general, copying without giving 
   a clear citation of your source is plagiarism
   (and will be pursued as an academic integrity violation).
+- Can I consult documentation from the libraries that we use in class such as pandas and torch?
+  Yes, this is highly encouraged, please do so.
 - Can I collaborate with my classmates on the homework? 
   Yes, as long as your share ideas and not code/results. 
   More specifically, homeworks are individual assignments which should be your own work, 
