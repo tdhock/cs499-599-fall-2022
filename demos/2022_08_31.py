@@ -8,7 +8,7 @@ import torchtext
 import sklearn
 
 zip_df = pd.read_csv(
-    "~/teaching/cs570-spring-2022/data/zip.test.gz",
+    "../data/zip.test.gz",
     header=None,
     sep=" ")
 
