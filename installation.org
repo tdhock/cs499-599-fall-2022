@@ -53,6 +53,13 @@ processes, looking for python modules, etc.
 
 ** Python support in emacs (only students who want to use emacs)
 
+First of all, if this is your first time ever using emacs, please type
+C-h t (type h while holding down control, then let go of control and
+type t) to open the emacs tutorial. Read through the entire tutorial
+and do all of the exercises, which will teach you the most important
+keyboard shortcuts for navigating and editing code. Keep re-doing
+the tutorial every day until you remember all of the keyboard shortcuts.
+
 To get python support in emacs I had to install emacs packages
 (elpy,conda). To do that first you need to put the following in your
 ~/.emacs file (which contains user-specific commands to run on emacs startup)
@@ -75,10 +82,9 @@ with python code, and my conda environments, I put the following in my
 ~/.emacs file:
 
 #+begin_src elisp
-(elpy-enable)
-(setq
- conda-anaconda-home (expand-file-name "~/miniconda3")
- conda-env-home-directory (expand-file-name "~/miniconda3"))
+  (elpy-enable)
+  (setq conda-anaconda-home (expand-file-name "~/miniconda3"))
+  (setq conda-env-home-directory conda-anaconda-home)
 #+end_src
 
 Make sure to change the path above from "~/miniconda3" to 
