@@ -26,6 +26,7 @@ zip_df.iloc[:,1:]
 
 # list all attributes/methods.
 dir(zip_df)
+help(zip_df.iloc)
 
 zip_mat = zip_df.iloc[:,1:].to_numpy()
 zip_mat.shape
@@ -39,7 +40,7 @@ np.repeat(index_vec, 16)
 # GOOD, define n_pixels to hold repeated number.
 n_pixels = 16
 index_vec = np.arange(n_pixels)
-image_index = 0
+image_index = 0 # one arbitrary example image to plot.
 zip_mat[image_index,:] 
 one_image_df = pd.DataFrame({
     "col":np.tile(index_vec, n_pixels),
@@ -51,13 +52,16 @@ one_image_df
 gg = p9.ggplot()+\
     p9.geom_raster(
         p9.aes(
+# names are visual properties, values are column names.
             x="col",
             y="row",
             fill="intensity",
             ),
         data=one_image_df)
-gg.save("2022_08_31.png")
-
+gg.save("01_visualizing_digits.png")
+## TODO scale_fill_gradient for black-white legend.
+## TODO coord_equal to force square pixels.
+## TODO facet_grid or facet_wrap(["id","label"]) to display multiple panels/examples.
 
 # another python plotting module is seaborn, which does not yet
 # implement much of the functionality we need, for example geom tile
