@@ -9,7 +9,7 @@ For this project you need to use scikit-learn.
   into train/test sets.
 - sklearn.model_selection.GridSearchCV can be used to split the train
   set into subtrain/validation sets for learning hyper-parameters
-  (n_neighbors in KNeighborsClassifier, l1_ratio and alpha in Lasso, etc).
+  (n_neighbors in KNeighborsClassifier, l1_ratio and alpha in LogisticRegressionCV, etc).
 
 *** Experiments/application
 - Use spam and zip data sets from
