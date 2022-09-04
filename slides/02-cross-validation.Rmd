@@ -25,9 +25,11 @@ if(FALSE){
   ## /usr/bin/pandoc 1.19.2.4, which is older/more compatible than
   ## ~/bin/pandoc 2.14.2, does not seem to work with rmarkdown 0.9.5.1
   ## -- error 6 --latex-engine has been removed.  Use --pdf-engine
-  ## instead.
+  ## instead. Actually pandoc >= 2 is required for {=latex} blocks so
+  ## better to use version under home.
+
+  ## Sys.setenv(PATH=paste0("bin:",Sys.getenv("PATH")))
   setwd("slides")
-  Sys.setenv(PATH=paste0("bin:",Sys.getenv("PATH")))
   rmarkdown::render("02-cross-validation.Rmd")
 }
 ```
@@ -70,7 +72,7 @@ mixture & people, 200 & height/weight, 2  & democratic/republican \\
 \end{tabular}
 ```
 
-\url{https://github.com/tdhock/cs570-spring-2022/tree/master/data}
+\url{https://github.com/tdhock/cs499-599-fall-2022/tree/master/data}
 
 \url{https://hastie.su.domains/ElemStatLearn/data.html}
 
@@ -589,7 +591,7 @@ show(gg)
 - Optimize weights $\mathbf w$ and intercept $\beta$ to minimize
   logistic loss.
 - If labels are recoded as $y\in\{-1,1\}$ then logistic loss is
-  $\ell(\hat y, y)=\log[1+\exp(-\hat y, y)]$.
+  $\ell(\hat y, y)=\log[1+\exp(-\hat y y)]$.
 
 ```{python}
 from sklearn.linear_model import LogisticRegression
