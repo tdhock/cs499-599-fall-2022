@@ -1,7 +1,8 @@
 import pandas as pd
-from sklearn.model_selection import KFold
-from sklearn.model_selection import GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import KFold #train/test splits
+from sklearn.model_selection import GridSearchCV #selecting best # of neighbors
+from sklearn.neighbors import KNeighborsClassifier #nearest_neighbors prediction.
+# TODO add import linear_model.
 
 zip_df = pd.read_csv(
     "../data/zip.test.gz",
