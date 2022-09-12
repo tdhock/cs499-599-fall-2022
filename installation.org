@@ -28,7 +28,7 @@ OR (less memory usage):
 
 #+begin_src shell-script
 conda env create -f https://raw.githubusercontent.com/tdhock/cs499-599-fall-2022/master/environment-p39only.yml
-pip install torchtext plotnine numpy pandas pillow sciki-image
+pip install torchtext plotnine numpy pandas pillow scikit-image
 #+end_src
 
 That should create a new "cs499f22" python environment with the
