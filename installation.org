@@ -1,3 +1,4 @@
+
 To do the homeworks you need to use python; it is recommended to
 install/use [[https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html][anaconda/miniconda]], with either
 - one of the [[https://docs.anaconda.com/anaconda/user-guide/tasks/integration/index.html][IDEs described on the anaconda docs]], (for beginners,
@@ -27,12 +28,12 @@ OR (less memory usage):
 
 #+begin_src shell-script
 conda env create -f https://raw.githubusercontent.com/tdhock/cs499-599-fall-2022/master/environment-p39only.yml
-pip install torchtext plotnine sklearn
+pip install torchtext plotnine numpy pandas pillow scikit-image
 #+end_src
 
-That should create a new "cs499f22" python environment. Before you
-activate an environment, you need to setup your shell for the first
-time.
+That should create a new "cs499f22" python environment with the
+required packages. Before you activate an environment, you need to
+setup your shell for the first time.
 
 #+begin_src shell-script
 conda init bash
