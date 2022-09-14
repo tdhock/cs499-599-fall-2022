@@ -12,7 +12,7 @@ For this project you need to use scikit-learn.
   (n_neighbors in KNeighborsClassifier, l1_ratio and alpha in LogisticRegressionCV, etc).
 
 *** Experiments/application
-- Use spam and zip data sets from
+- Use spam and zip.train data sets from
   [[https://web.stanford.edu/~hastie/ElemStatLearn/data.html]], [[file:~/teaching/cs570-spring-2022/data/][local copy
   here]]. After using pandas.read_csv, remove any rows which have non-01
   labels (so we can do binary classification in both data sets). Then
