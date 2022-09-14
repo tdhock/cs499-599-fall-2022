@@ -23,24 +23,32 @@ This class should work just like sklearn.neighbors.KNeighborsClassifier.
 
 *** Class: MyCV
 
+
 This class should work just like
 sklearn.model_selection.GridSearchCV. In other words, it should do
 best parameter selection via cross-validation for any estimator (there should
 be no code that is specific to nearest neighbors).
-- instantiation: MyCV(estimator=MyKNN(), param_grid={'n_neighbors':range(20)}, cv=5)
+- IMPORTANT: nothing in this class should be specific to the nearest
+  neighbors algorithm! It should not have any reference to
+  "n_neighbors" in the class definition.
+- instantiation: MyCV(estimator=MyKNN(),
+  param_grid=[{'n_neighbors':n_neighbors} for n_neighbors in
+  range(20)], cv=5)
 - fit(X=train_features, y=train_labels) should compute the best number
   of neighbors using K-fold cross-validation, with the number of folds
   defined by the cv parameter. Begin by assigning random fold ID
   numbers to each observation. There should be for loops over the K
   subtrain/validation splits, and the parameters (n_neighbors) in
-  param_grid. For each, use fit(*subtrain_data) and
+  param_grid. For each, use estimator.fit(*subtrain_data) and
   predict(validation_features) methods of the estimator, then save the
   validation accuracy. For each parameter (n_neighbors) in param_grid
-  compute the mean validation accuracy over the K splits. Finally, maximize
-  the mean validation accuracy to determine a best parameter dictionary (key
-  should be n_neighbors) to save in the best_params_
-  attribute. Finally use setattr with the key in best_params_ to set
-  the corresponding attribute of the estimator.
+  compute the mean validation accuracy over the K splits. Finally,
+  maximize the mean validation accuracy to determine a best parameter
+  dictionary (one of the elements of param_grid, key should be
+  n_neighbors) to save in the best_params_ attribute. Finally use
+  setattr with the key in best_params_ to set the corresponding
+  attribute of the estimator, and re-run estimator.fit on the whole
+  data set.
 - predict(X=test_features) runs estimator.predict(X=test_features) --
   the best number of neighbors should already have been set as an
   attribute of estimator, at the end of the fit method.
@@ -61,7 +69,7 @@ be no code that is specific to nearest neighbors).
   
 *** Extra credit
 
-- Implement scaling as well, maybe similar to make_pipeline and
+- Implement scaling as well, similar to make_pipeline and
   StandardScaler from scikit-learn. Add your method to the test
   accuracy figure, so we should see scaled and unscaled as separate
   algorithms on the test accuracy plot. How does your implementation
@@ -70,6 +78,8 @@ be no code that is specific to nearest neighbors).
   for some data sets (zip) you may have some features in the train set
   which are constant (zero variance/sd). You can't divide by zero, so
   instead just leave that feature alone (don't attempt to scale it).
+- Implement scaling by creating another data set in data_dict, called
+  spam_scaled.
 - Using the zip and/or spam data, implement a computational experiment
   that demonstrates adding noise features results in lower test
   accuracy, similar to the one shown in the class slides. Make a
