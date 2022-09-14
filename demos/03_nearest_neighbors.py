@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
 
+# TODO spam label column.
+
+# TODO featureless computation.
+
 zip_df = pd.read_csv(
     "~/teaching/cs570-spring-2022/data/zip.test.gz",
     header=None,
@@ -43,6 +47,10 @@ set_labels = {
     set_name:zip_labels[is_set]
     for set_name, is_set in is_set_dict.items()
 }
+
+set_labels.keys()
+train_label_counts = pd.Series(set_labels["train"]).value_counts()
+featureless_pred_label = train_label_counts.idxmax()
 
 # nearest neighbors.
 test_i = 0 # index of test observation.

@@ -60,20 +60,21 @@ that week, 11:59PM.
   implementing an automatic differentiation system.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Automatic differentiation.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.5]].
-- Oct 17, Homework week 8: regularizing neural networks.
-  - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
+- Oct 17, Homework week 8: other loss functions, for regression and
+  multi-class classification.
 - Oct 24, week 9 review and exam.
   - No class Mon Oct 24.
   - Exam review is Weds Oct 26.
   - Exam is Fri Oct 28, in class. During the exam you are allowed to
     use one page of handwritten notes.
   - [[file:exams/spring_2022_mid_term_exam_2_practice.pdf][Practice exam 2 PDF]].
-- Oct 31, Homework week 10: optimization.
+- Oct 31, Homework week 10: regularizing neural networks.
+  - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
+- Nov 7, Homework week 11: optimization.
   - Reading [[https://www.deeplearningbook.org/contents/optimization.html][DL8]].
-- Nov 7, Homework week 11: convolutional networks.
+- Nov 14, Homework week 12: convolutional networks.
   - Reading [[https://www.deeplearningbook.org/contents/convnets.html][DL9]].
-- Nov 14, Homework week 12: learning text embeddings.
-- Nov 21, Homework week 13: recurrent networks.
+- Nov 21, Homework week 13: learning text embeddings, recurrent networks.
   - Reading [[https://www.deeplearningbook.org/contents/rnn.html][DL10]].
 - Nov 28, Homework week 14: interpretability via attention mechanism.
   - Readings: [[https://faculty.cc.gatech.edu/~dyang888/docs/naacl16.pdf][Yang et al, 2016]], [[https://blog.floydhub.com/gru-with-pytorch/][GRU vs LSTM]], [[https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html][PyTorch translation

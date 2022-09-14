@@ -8,14 +8,36 @@ zip_df = pd.read_csv(
     "../data/zip.test.gz",
     header=None,
     sep=" ")
+spam_df = pd.read_csv(
+    "../data/spam.data",
+    header=None,
+    sep=" ")
 
-is01 = zip_df[0].isin([0,1])
-zip01_df = zip_df.loc[is01,:]
+zip_is01 = zip_df[0].isin([0,1])
+zip01_df = zip_df.loc[zip_is01,:]
 
+spam_nrow, spam_ncol = spam_df.shape
+data_tups = [
+    ("zip", zip01_df, 0),
+    ("spam", spam_df, spam_ncol-1)
+]
+data_dict = {}
+for data_name, data_df, label_col in data_tups:
+    output_vec = data_df[label_col]
+    is_feature = data_df.columns != label_col
+    input_mat = data_df.iloc[:,is_feature].to_numpy()
+    data_dict[data_name] = input_mat, output_vec
 data_dict = {
     "zip":(zip01_df.loc[:,1:].to_numpy(), zip01_df[0]),
+    "spam":(spam_df.iloc[:,:(spam_ncol-1)].to_numpy(), spam_df[spam_ncol-1]),
     #"spam":TODO
 }
+for tuple_var in data_dict.items():
+    data_name, (in_mat, out_vec) = tuple_var 
+    is01 = out_vec.isin([0,1])
+    print({data_name:is01.value_counts()})
+    if not is01.all():
+        raise Exception("there are some labels which are not 0,1 in "+data_name)
 
 test_acc_df_list = []
 for data_set, (input_mat, output_vec) in data_dict.items():
