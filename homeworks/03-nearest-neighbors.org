@@ -96,8 +96,22 @@ be no code that is specific to nearest neighbors).
   class MyCV:
       def fit(self, X, y):
 	  """This is a method. the first argument should be self."""
-	  self.train_features = X
+	  fold_vec = np.random.randint(
+	      low=0, high=self.n_folds, size=zip_labels.size)
+	  for test_fold in range(self.n_folds):
+	      is_set_dict = {
+		  "test":fold_vec == test_fold,
+		  "train":fold_vec != test_fold,
+	      }
+	      model = self.estimator(
+		  set_features["subtrain"], set_labels["subtrain"])
+	      model.predict(
+		  set_features["validation"], set_labels["validation"])
+            
+
   my_instance = MyCV()
+  my_instance.n_folds = 5
+  my_instance.estimator = MyKNN()
   # This is how to call the method (self argument is omitted).
   my_instance.fit(X=train_X, y=train_y)
 #+END_SRC
