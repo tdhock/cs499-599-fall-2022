@@ -23,7 +23,6 @@ This class should work just like sklearn.neighbors.KNeighborsClassifier.
 
 *** Class: MyCV
 
-
 This class should work just like
 sklearn.model_selection.GridSearchCV. In other words, it should do
 best parameter selection via cross-validation for any estimator (there should
