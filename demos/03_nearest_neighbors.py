@@ -140,6 +140,6 @@ help(diff_mat.sum)
 squared_diff_mat.sum(axis=0) # sum over columns, for each row.
 distance_vec = squared_diff_mat.sum(axis=1) # sum over rows
 sorted_indices = distance_vec.argsort()
-n_neighbors = 301
+n_neighbors = 3
 nearest_indices = sorted_indices[:n_neighbors]
 nearest_labels = set_labels["train"][nearest_indices]
