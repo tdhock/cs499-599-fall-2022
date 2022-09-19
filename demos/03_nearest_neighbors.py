@@ -1,4 +1,5 @@
 import pandas as pd
+import pdb
 import numpy as np
 
 zip_df = pd.read_csv(
@@ -46,6 +47,19 @@ set_labels = {
     for set_name, is_set in is_set_dict.items()
 }
 
+set_features = {}
+set_labels = {}
+for set_name, is_set in is_set_dict.items():
+    set_labels[set_name] = zip_labels[is_set]
+    set_features[set_name] = zip_features[is_set,:]
+
+set_data = {}
+for set_name, is_set in is_set_dict.items():
+    set_data[set_name] = {
+        "X":zip_features[is_set,:],
+        "y":zip_labels[is_set]
+        }
+
 set_labels.keys()
 train_label_counts = pd.Series(set_labels["train"]).value_counts()
 featureless_pred_label = train_label_counts.idxmax()
@@ -54,6 +68,7 @@ class Featureless:
     def fit(self, X, y):
         train_features = X
         train_labels = y
+        pdb.set_trace()
         train_label_counts = pd.Series(train_labels).value_counts()
         self.featureless_pred_label = train_label_counts.idxmax()
     def predict(self, X):
