@@ -3,8 +3,7 @@ Gradient descent for logistic regression
 In this project your goal is to implement the gradient descent
 algorithm for learning a logistic regression model, and then use it
 with early stopping regularization to make predictions on several real
-data sets. There are two options, and you only need to implement one
-of the two, but you can implement both for extra credit.
+data sets. 
 
 ** Class: MyLogReg
 The goal of this exercise is to code the gradient descent algorithm
@@ -19,14 +18,14 @@ from scratch using numpy.
   subtrain observation). If input labels are 0/1 then make sure to
   convert labels to -1 and 1 for learning with the logistic
   loss. 
-- Gradient descent algo: Initialize a weight vector with size equal to
-  the number of columns in scaled_mat. Then use a for loop from 0 to
-  max_iterations to iteratively compute linear model parameters that
-  minimize the average logistic loss over the subtrain data. During
-  each iteration of the algorithm you should compute the average
-  logistic loss on the subtrain data (and the validation data, if
-  present and stored as an attribute of the instance, see MyLogRegCV
-  class below).
+- Gradient descent algo: Initialize an intecept and weight vector with
+  size equal to the number of columns in scaled_mat. Then use a for
+  loop from 0 to max_iterations to iteratively compute linear model
+  parameters that minimize the average logistic loss over the subtrain
+  data. During each iteration of the algorithm you should compute the
+  average logistic loss on the subtrain data (and the validation data,
+  if present and stored as an attribute of the instance, see
+  MyLogRegCV class below).
 - At the end of the algorithm you should save the learned
   weights/intercept (on original scale) as the coef_ and intercept_
   attributes of the class (values should be similar to attributes of
