@@ -19,6 +19,10 @@ Sys.setenv(RETICULATE_PYTHON=if(.Platform$OS.type=="unix")
   else "~/Miniconda3/envs/cs570s22/python.exe")
 reticulate::use_condaenv("cs570s22", required=TRUE)
 in_render <- !is.null(knitr::opts_knit$get('rmarkdown.pandoc.to'))
+if(FALSE){
+  setwd("slides")
+  rmarkdown::render("4-linear-models.Rmd")
+}
 ```
 
 # Supervised machine learning
@@ -755,6 +759,11 @@ http://ml.nau.edu/viz/2022-02-02-gradient-descent-regression/
 
 ![](04-gradient-descent-regression.png){width=100%}
 
+- Step size too large: subtrain loss increases (but should always
+  decrease).
+- Step size too small: learning is very slow (requires a lot of
+  iterations to minimize loss).
+
 ---
 
 # Early stopping regularization
@@ -811,7 +820,8 @@ sd_vec = np.sqrt(subtrain_features.var(axis=0))
 scaled_mat = (subtrain_features - mean_vec)/sd_vec
 learn_mat = np.column_stack((np.repeat(1, n_subtrain), scaled_mat))
 max_iterations = 100
-weight_vec = np.repeat(0.0, scaled_mat.shape[1]+1)
+scaled_nrow, scaled_ncol = scaled_mat.shape
+weight_vec = np.repeat(0.0, scaled_ncol+1)
 step_size = 1
 loss_df_list = []
 for iteration in range(max_iterations):
@@ -899,8 +909,8 @@ Before learning make sure to
 - to learn intercept, can add a column of ones, and add an extra entry
   to weight vector (simpler to code).
 
-After learning it is most convenient for the user if you report the
-coefficients on the original scale.
+If you do scaling as a part of your learning algorithm, then make sure
+to report the coefficients on the original scale. (easier for user)
 
 - Let $m_j,s_j$ be the mean/sd of each column $j$.
 - Let $\tilde {\mathbf{ w}},\tilde\beta$ be the parameters learned using
@@ -989,3 +999,5 @@ show(gg)
   problem, so are using the square loss instead of the logistic loss?
 - What regularization hyper-parameter(s) can be learned in nearest
   neighbors?
+- Could the step size / learning rate be considered a regularization
+  parameter? Do large or small values overfit/underfit?

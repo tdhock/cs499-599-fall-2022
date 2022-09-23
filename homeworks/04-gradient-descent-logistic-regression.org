@@ -70,7 +70,17 @@ the validation loss for each iteration of the gradient descent.
 
 After having coded this class, run MyLogRegCV on both the spam and zip
 data sets (make sure they are scaled, even before doing train/test
-split). Make a plot of subtrain and validation loss as a function of
+split).
+- note that zip data is already scaled between -1 and 1, so you can
+  just use it as is.
+- for the spam data set, you should subtract mean of each column, and
+  divide by SD, before you do train/test splits. This is technically
+  cheating and will yield a biased estimate of test error, since you
+  are using the test data to define the mean/sd in scaling. But this
+  will make the homework a lot easier and it will not affect the test
+  error estimates much.
+
+Make a plot of subtrain and validation loss as a function of
 number of iterations. For full credit,
 - your subtrain loss should always be decreasing, and
 - your validation loss should show the expected U shape.

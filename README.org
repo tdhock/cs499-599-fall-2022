@@ -44,7 +44,7 @@ that week, 11:59PM.
   - Reading [[https://www.deeplearningbook.org/contents/ml.html][DL5]].
 - Sep 19, [[file:homeworks/04-gradient-descent-logistic-regression.org][Homework week 4]]: linear model with early stopping
   regularization.
-  - [[file:slides/04-linear-models.pdf][Slides]], [[http://ml.nau.edu/viz/2022-02-02-gradient-descent-regression/][interactive figure showing gradient descent for regression]].
+  - [[file:slides/04-linear-models.pdf][Slides]], [[http://ml.nau.edu/viz/2022-02-02-gradient-descent-regression/][interactive figure showing gradient descent for regression]] ([[https://github.com/tdhock/cs570-spring-2022/blob/master/figure-gradient-descent-regression.R][source]]).
   - Reading [[https://www.deeplearningbook.org/contents/ml.html][DL5]], [[https://www.deeplearningbook.org/contents/numerical.html][DL4.3]]. 
 - Sep 26, week 5 review and exam.
   - [[file:exams/exam1_practice.pdf][Exam review]] is Mon Sept 26.
