@@ -47,7 +47,7 @@ that week, 11:59PM.
   - [[file:slides/04-linear-models.pdf][Slides]], [[http://ml.nau.edu/viz/2022-02-02-gradient-descent-regression/][interactive figure showing gradient descent for regression]].
   - Reading [[https://www.deeplearningbook.org/contents/ml.html][DL5]], [[https://www.deeplearningbook.org/contents/numerical.html][DL4.3]]. 
 - Sep 26, week 5 review and exam.
-  - Exam review is Mon Sept 26.
+  - [[file:exams/exam1_practice.pdf][Exam review]] is Mon Sept 26.
   - No class Weds Sept 28.
   - Exam is Fri Sept 30, in class. During the exam you are allowed to
     use one page of handwritten notes.
