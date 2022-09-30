@@ -19,8 +19,10 @@ from scratch using numpy.
   convert labels to -1 and 1 for learning with the logistic
   loss. 
 - Gradient descent algo: Initialize an intecept and weight vector with
-  size equal to the number of columns in scaled_mat. Then use a for
-  loop from 0 to max_iterations to iteratively compute linear model
+  size equal to the number of columns in scaled_mat (or append a
+  column of ones to the subtrain features, and use a weight vector
+  with an additional entry for the intercept). Then use a for loop
+  from 0 to max_iterations to iteratively compute linear model
   parameters that minimize the average logistic loss over the subtrain
   data. In each iteration you should take a step, using
   self.step_size, in the negative gradient direction.
@@ -37,7 +39,8 @@ from scratch using numpy.
   class in scikit-learn).
 - Implement a decision_function(X) method which uses the learned
   weights and intercept to compute a real-valued score (larger for
-  more likely to be predicted positive).
+  more likely to be predicted positive). This should be about one line
+  of code, using something like np.matmul(features, weights).
 - Implement a predict(X) method which uses np.where to threshold the
   predicted values from decision_function, and obtain a vector of
   predicted classes (1 if predicted value is positive, 0 otherwise).

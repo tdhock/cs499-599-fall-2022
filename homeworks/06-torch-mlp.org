@@ -8,7 +8,7 @@ which provides automatic differentiation (you don't have to code the
 gradients yourself, which helps a lot for the complex gradients in
 neural networks).
 
-** Class: NeuralNetwork
+** Class: TorchModel
 
 - similar to https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html#creating-models
 - Inherits from torch.nn.Module.
@@ -16,15 +16,11 @@ neural networks).
   integers).
 - Defines forward method which takes an input x and returns the
   output/prediction of the neural network.
-- You should instantiate this in two ways, first with a linear model,
-  and second with a "deep" neural network (with at least two hidden
-  layers).
 
-** Class: TorchMLP (torch multi-layer perceptron)
+** Class: TorchLearner
 
-This should be similar to what we did last week, except that the
-take_step method should use torch instead of your own implementation
-of gradients.
+This should be similar to what we did last week, except that you
+should use torch instead of your own implementation of gradients.
 
 - __init__ method should store hyper-parameters, max_epochs,
   batch_size, step_size, and units_per_layer (list or numpy array of
@@ -32,8 +28,8 @@ of gradients.
   features, last element should be 1). Also instantiate a
   NeuralNetwork() and save as an attribute of this instance,
   self.nn. Also instantiate torch.optim.SGD and save as
-  self.optimizer, and instantiate torch.nn.CrossEntropy and save as
-  self.loss_fun.
+  self.optimizer, and instantiate torch.nn.BCEWithLogitsLoss and save
+  as self.loss_fun.
 - take_step(X=batch_features, y=batch_labels) method should
   - begin by computing self.nn(X) and saving as vector of predictions
     for this batch. 
@@ -53,43 +49,50 @@ of gradients.
 - predict(X=test_features) method should return a numpy array of
   predicted classes given the current weights in the neural network.
 
+** Class: TorchLearnerCV
+
+Like the CV class last week, this should have a fit method that splits
+train into subtrain and validation sets, then runs gradient descent
+and computes loss with respect to both sets at the end of each epoch.
+After learning the best number of epochs using the validation set, you
+should re-run gradient descent on the entire train set using that
+number of epochs.
+
 ** Hyper-parameter training and diagnostic plot
 
 You must use the hyper-parameter learning method which computes the
 subtrain/validation loss at the end of each epoch.
-- TorchMLPCV: a single class with a fit method that splits train into
-  subtrain and validation sets, then computes loss with respect to
-  both sets at the end of each epoch.
-
-Run it on the full spam/zip data sets, and make a plot for each data
-set, of subtrain/validation loss as a function of number of
-epochs. For full credit your validation loss should show the expected
-U shape (if it does not, then you may need to change
-hyper-parameters). According to your plot, what is the best number of
-epochs for spam? For zip?
+- You should use two different values of units_per_layer, first with a
+  linear model (no hidden layers), and second with a "deep" neural
+  network (with at least two hidden layers).
+- Run it on the full spam/zip data sets, and make a plot for each data
+  set and model, of subtrain/validation loss as a function of number
+  of epochs. For full credit your subtrain loss should always
+  decrease, and your validation loss should show the expected U shape
+  (if it does not, then you may need to change hyper-parameters). In
+  each plot, what is the best number of epochs?
 
 ** Experiments/application
 
-- Use similar experimental setup as previous homeworks
-  (with 3-fold CV train/test splits defined by KFold, and with
+- Use similar experimental setup as previous homeworks (with 3-fold CV
+  train/test splits defined by KFold, and with featureless,
   GridSearchCV+KNeighborsClassifier and LogisticRegressionCV), but add
-  your new algorithm to compare.
-- Make sure to run experiments on both spam and zip data. This time
-  make sure to scale the data sets before putting them into the
+  your two new algorithms to compare (TorchLinear for linear model,
+  and TorchDeep for neural network with at least two hidden layers).
+- Run experiments on both spam and zip data.
+- Make sure to scale the spam data before putting them into the
   data_dict and before any splitting (so you don't have to worry about
-  scaling in neural network code). Show a table of resulting test
-  accuracy numbers, as well as a ggplot like in last homework. On the
-  ggplot y axis there should be at least the following algorithms:
-  featureless, GridSearchCV+KNeighborsClassifier,
-  LogisticRegressionCV, TorchMLPCV.
+  scaling in neural network code).
+- Show a table of resulting test accuracy numbers, as well as a ggplot
+  like in last homework. 
 - Does your implementation get similar test accuracy as scikit-learn,
   or better?  (it should!)
 
 ** Extra credit
 
-- Show your MyMLP/AutoMLP classes from previous weeks on your test
-  accuracy plot. Are they more accurate than TorchMLP, or about the
-  same?  (they should be about the same if everything was implemented
+- Show your linear model from last week on your test accuracy plot. Is
+  it more accurate than the torch linear model, or about the same?
+  (they should be about the same if everything was implemented
   correctly)
 - Implement learning an intercept for every hidden/output unit, as an
   instantiation parameter in TorchMLP(intercept=True). Hint: you just
