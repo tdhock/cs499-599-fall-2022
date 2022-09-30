@@ -1,26 +1,30 @@
-Backprop algorithm and training neural networks from scratch
+Training neural networks using torch
 
-Like the last two weeks, the goal is to implement a stochastic
-gradient descent algorithm for training a neural network. Previously
-we implemented the learning algorithm from scratch using numpy (with
-or without automatic differentiation). This week we will use the torch
-module in python, which provides a reference implementation of the
-automatic differentiation ideas we studied last week.
+The goal is to implement a stochastic gradient descent algorithm for
+training a linear model and a neural network. Previously we
+implemented the full gradient learning algorithm for linear model from
+scratch using numpy. This week we will use the torch module in python,
+which provides automatic differentiation (you don't have to code the
+gradients yourself, which helps a lot for the complex gradients in
+neural networks).
 
 ** Class: NeuralNetwork
 
 - similar to https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html#creating-models
 - Inherits from torch.nn.Module.
-- Should define a "deep" neural network (with at least two hidden layers).
-- Defines an __init__ method which inputs units_per_layer (list of integers) and saves 
+- Defines an __init__ method which inputs units_per_layer (list of
+  integers).
 - Defines forward method which takes an input x and returns the
   output/prediction of the neural network.
+- You should instantiate this in two ways, first with a linear model,
+  and second with a "deep" neural network (with at least two hidden
+  layers).
 
 ** Class: TorchMLP (torch multi-layer perceptron)
 
 This should be similar to what we did last week, except that the
-take_step method should use torch instead of your own automatic
-differentation classes.
+take_step method should use torch instead of your own implementation
+of gradients.
 
 - __init__ method should store hyper-parameters, max_epochs,
   batch_size, step_size, and units_per_layer (list or numpy array of

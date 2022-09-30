@@ -15,13 +15,13 @@ knitr::opts_chunk$set(
   fig.width=10,
   fig.height=6)
 Sys.setenv(RETICULATE_PYTHON=if(.Platform$OS.type=="unix")
-  "/home/tdhock/.local/share/r-miniconda/envs/cs570s22/bin/python"
-  else "~/Miniconda3/envs/cs570s22/python.exe")
-reticulate::use_condaenv("cs570s22", required=TRUE)
+  "/home/tdhock/.local/share/r-miniconda/envs/cs499f22/bin/python"
+  else "~/Miniconda3/envs/cs499f22/python.exe")
+reticulate::use_condaenv("cs499f22", required=TRUE)
 in_render <- !is.null(knitr::opts_knit$get('rmarkdown.pandoc.to'))
 if(FALSE){
   setwd("slides")
-  rmarkdown::render("4-linear-models.Rmd")
+  rmarkdown::render("04-linear-models.Rmd")
 }
 ```
 
@@ -59,7 +59,9 @@ def make_grid(mat, n_grid = 80):
         lambda x: np.linspace(min(x),max(x), n_grid), axis=0)
     mesh_tup = np.meshgrid(*[mesh_args[x] for x in mesh_args])
     mesh_vectors = [v.flatten() for v in mesh_tup]
-    return pd.DataFrame(dict(zip(mesh_args,mesh_vectors)))
+    out_df = pd.DataFrame(dict(zip(mesh_args,mesh_vectors)))
+    out_df.columns = mat.columns
+    return out_df
 # https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.find_contours
 # https://scikit-image.org/docs/dev/auto_examples/edges/plot_contours.html#sphx-glr-auto-examples-edges-plot-contours-py
 def contour_paths(three_cols, level):
@@ -301,8 +303,21 @@ from sklearn.linear_model import LogisticRegression
 lr = LogisticRegression().fit(mix_features, mix_labels)
 lr.intercept_
 lr.coef_
-lr.decision_function(grid_mat)
+g_df = pd.DataFrame(grid_mat, columns=["height_in","weight_lb"])
+lr.decision_function(g_df)
 (grid_mat * lr.coef_).sum(axis=1) + lr.intercept_
+```
+
+--- 
+
+# Using learned coefficients to compute predictions 2
+
+Vector of predictions for matrix of data is $\mathbf X \mathbf w$,
+
+```{python echo=TRUE, results=TRUE}
+lr.decision_function(g_df)
+np.matmul(grid_mat, lr.coef_.T) + lr.intercept_
+np.matmul(lr.coef_, grid_mat.T) + lr.intercept_
 ```
 
 --- 
@@ -434,6 +449,7 @@ $$ \mathcal L(\mathbf w,\beta)=\sum_{i=1}^n \ell(\beta + \mathbf w^T
 - Logarithm: $d/dx \log x = 1/x$.
 - Exponential: $d/dx \exp x = \exp x$.
 - Linearity: $d/dx [g(x) + h(x)] = d/dx\ g(x) + d/dx\ h(x)$.
+- Multiplicative constants: $d/dx [ cf(x) ] = c [ d/dx\ f(x) ]$.
 - Chain rule: if $z = g(x)$ and $y = h(g(x)) = h(z)$ then we have
 
 $$ \frac{dy}{dx} = \frac{dy}{dz} \frac{dz}{dx} = h'(z) g'(x) =
@@ -591,7 +607,7 @@ show(gg_deriv("logistic"))
   optimization problem, so a solution $\mathbf w^*,\beta^*$ which
   achieves the global minimum of the train loss $\mathcal L$ can be
   computed using gradient descent (if step size small enough).
-- But do we want to minimize the train loss?
+- But do we want to minimize the train loss? (no, we want to minimize the test loss)
 
 ---
 
