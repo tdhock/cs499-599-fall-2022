@@ -30,23 +30,26 @@ for set_name, is_set in is_set_dict.items():
     set_labels[set_name] = spam_labels[is_set]
 {set_name:array.shape for set_name, array in set_features.items()}
 
-subtrain_mean = set_features["subtrain"].mean(axis=0)
-subtrain_sd = np.sqrt(set_features["subtrain"].var(axis=0))
+full_mean = spam_features.mean(axis=0)
+full_sd = np.sqrt(spam_features.var(axis=0))
 
 scaled_features = {
-    set_name:(set_mat-subtrain_mean)/subtrain_sd
+    set_name:(set_mat-full_mean)/full_sd
     for set_name, set_mat in set_features.items()
     }
 {set_name:set_mat.mean(axis=0) for set_name, set_mat in scaled_features.items()}
 {set_name:set_mat.var(axis=0) for set_name, set_mat in scaled_features.items()}
 
 nrow, ncol = scaled_features["subtrain"].shape
+# first entry is intercept.
 weight_vec = np.zeros(ncol+1)
 learn_features = np.column_stack([
-    np.repeat(1, nrow),
+    np.repeat(1, nrow), # add a column of ones for intercept learning.
     scaled_features["subtrain"]
 ])
 learn_features[:,0]
+
+# need to re-code label 0 as -1 for logistic loss formula!
 subtrain_labels = np.where(set_labels["subtrain"]==1, 1, -1)
 step_size = 0.001
 
