@@ -1006,6 +1006,57 @@ gg = p9.ggplot()+\
         data=loss_df)
 show(gg)
 ```
+---
+
+# Code for linear model initialiation
+
+```python
+import numpy as np
+nrow, ncol = scaled_features["subtrain"].shape
+weight_vec = np.zeros(ncol+1)
+
+import torch
+class LinearModel(torch.nn.Module):
+    def __init__(self):
+        super(LinearModel, self).__init__()
+        self.weight_vec = torch.nn.Linear(ncol, 1)
+    def forward(self, feature_mat):
+        return self.weight_vec(feature_mat)
+model = LinearModel()
+```
+
+---
+
+# Code for linear model predictions and loss
+
+```python
+pred_vec = np.matmul(learn_features, weight_vec)
+log_loss = np.log(1+np.exp(-subtrain_labels * pred_vec))
+
+loss_fun = torch.nn.BCEWithLogitsLoss()
+pred_tensor = model(feature_tensor).reshape(nrow)
+label_tensor = torch.from_numpy(label_01).float()
+loss_tensor = loss_fun(pred_tensor, label_tensor)
+```
+
+---
+
+# Code for computing gradient descent parameter update
+
+```python
+step_size = 0.5
+grad_loss_pred = -subtrain_labels/(
+    1+np.exp(subtrain_labels * pred_vec))
+grad_loss_weight_mat = grad_loss_pred * learn_features.T
+grad_vec = grad_loss_weight_mat.sum(axis=1)
+weight_vec -= step_size * grad_vec
+
+optimizer = torch.optim.SGD(
+    model.parameters(), lr=step_size)
+optimizer.zero_grad() #zeros gradients.
+loss_tensor.backward() #adds to gradients.
+optimizer.step() #updates weights in model.
+```
 
 ---
 
