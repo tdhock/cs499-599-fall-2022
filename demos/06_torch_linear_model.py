@@ -32,16 +32,42 @@ for set_name, is_set in is_set_dict.items():
     set_labels[set_name] = spam_labels[is_set]
 {set_name:array.shape for set_name, array in set_features.items()}
 
-nrow, ncol = set_features["subtrain"].shape
 import torch
 class LinearModel(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, num_inputs):
         super(LinearModel, self).__init__()
-        self.weight_vec = torch.nn.Linear(ncol, 1)
+        self.weight_vec = torch.nn.Linear(num_inputs, 1)
     def forward(self, feature_mat):
         return self.weight_vec(feature_mat)
 
-model = LinearModel()
+class Net(torch.nn.Module):
+    def __init__(self, *units_per_layer):
+        super(Net, self).__init__()
+        seq_args = []
+        for layer_i in range(len(units_per_layer)-1):
+            units_in = units_per_layer[layer_i]
+            units_out = units_per_layer[layer_i+1]
+            seq_args.append(
+                torch.nn.Linear(units_in, units_out))
+            if layer_i != len(units_per_layer)-2:
+                seq_args.append(torch.nn.ReLU())
+        self.stack = torch.nn.Sequential(*seq_args)
+    def forward(self, feature_mat):
+        return self.stack(feature_mat)
+
+sizes_dict = {
+    "linear":(ncol, 1),
+    "nnet":(ncol, 100, 10, 1)
+    }
+model_dict = {}
+for model_name, units_per_layer in sizes_dict.items():
+    model_dict[model_name] = Net(*units_per_layer)
+
+nrow, ncol = set_features["subtrain"].shape
+net = Net(ncol, 200, 100, 50, 10, 1)
+feature_tensor = torch.from_numpy(set_features["subtrain"]).float()
+net(feature_tensor).shape
+model = LinearModel(ncol)
 [p for p in model.weight_vec.parameters()]
 [p for p in model.parameters()]
 
@@ -50,7 +76,6 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.5)
 
 optimizer.zero_grad()
 [p.grad for p in model.weight_vec.parameters()]
-feature_tensor = torch.from_numpy(set_features["subtrain"]).float()
 label_01 = set_labels["subtrain"]
 label_tensor = torch.from_numpy(label_01).float()
 pred_tensor = model(feature_tensor).reshape(nrow)
