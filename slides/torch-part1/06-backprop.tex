@@ -271,6 +271,8 @@ $$
 \item This is the \textbf{full} gradient method (same as we did for
   linear models): batch size = $n$ =
   subtrain set size, so 1 step per epoch/iteration.
+\item An \textbf{epoch} is the time/iterations to go through the
+  subtrain set (computing gradient for each observation once).
 \end{itemize}
 
 \end{frame}
@@ -336,7 +338,7 @@ parameters and hidden units.
 \item Deep learning libraries like torch/keras do this using automatic
   differentiation based on your definition of the forward method and
   the loss function.
-\item This week in class we will code the gradient computation from
+\item We will code the gradient computation from
   scratch to see how it works.
 \item In the code this should be a for loop from last layer to first
   layer.
