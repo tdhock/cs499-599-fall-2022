@@ -6,10 +6,11 @@ implemented the full gradient learning algorithm for linear model from
 scratch using numpy. This week we will use the torch module in python,
 which provides automatic differentiation (you don't have to code the
 gradients yourself, which helps a lot for the complex gradients in
-neural networks).
+neural networks). You should implement three different classes.
 
 ** Class: TorchModel
 
+- This class implements a predictive model using the torch framework.
 - similar to https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html#creating-models
 - Inherits from torch.nn.Module.
 - Defines an __init__ method which inputs units_per_layer (list of
@@ -20,8 +21,10 @@ neural networks).
 
 ** Class: TorchLearner
 
-This should be similar to what we did last week, except that you
-should use torch instead of your own implementation of gradients.
+This class implements fit/predict methods for weight matrix parameter
+learning and making predictions with the previous class. It should be
+similar to what we did last week, except that you should use torch
+instead of your own implementation of gradients.
 
 - __init__ method should store hyper-parameters, max_epochs,
   batch_size, step_size, and units_per_layer (list or numpy array of
@@ -51,10 +54,12 @@ should use torch instead of your own implementation of gradients.
 
 ** Class: TorchLearnerCV
 
-Like the CV class last week, this should have a fit method that splits
-train into subtrain and validation sets, then runs gradient descent
-and computes loss with respect to both sets at the end of each epoch.
-After learning the best number of epochs using the validation set, you
+This class should implement hyper-parameter learning (select the
+number of epochs which minimizes loss on validation set). Like the CV
+class last week, this should have a fit method that splits train into
+subtrain and validation sets, then runs gradient descent and computes
+loss with respect to both sets at the end of each epoch.  After
+learning the best number of epochs using the validation set, you
 should re-run gradient descent on the entire train set using that
 number of epochs.
 
@@ -96,7 +101,7 @@ epoch.
   (they should be about the same if everything was implemented
   correctly)
 - Implement learning an intercept for every hidden/output unit, as an
-  instantiation parameter in TorchMLP(intercept=True). Hint: you just
+  instantiation parameter in TorchModel(intercept=True). Hint: you just
   need to use bias=True or False when instantiating the
   torch.nn.Linear class. Show both intercept=True and False on your
   test accuracy plot: which is more accurate, or are they about the
