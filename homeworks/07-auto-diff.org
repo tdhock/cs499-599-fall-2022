@@ -1,18 +1,17 @@
 Backprop algorithm and training neural networks from scratch
 
 Like last week, the goal is to implement a stochastic gradient descent
-algorithm for a neural network from scratch. Last week there was a
-monolithic compute_gradient method which contained all of the logic
-for the backpropagation algorithm. This week we will break the
-gradient computation into several different classes in order to
-demonstrate how "automatic differentiation" systems work. The
-advantage of such systems is "separation of concerns," which is a
-common theme in computer science. In this instance we separate the
-gradient computations into separate classes which represent operations
-for computing predictions, so that the person who writes the fit()
-method of the learning algorithm just needs to compose instances of
-these classes, and does not need to understand the details of the
-gradient computations.
+algorithm for a neural network from scratch. Last week we used torch
+to implement the backpropagation algorithm. This week we will break
+the gradient computation into several different classes in order to
+demonstrate how "automatic differentiation" systems like torch
+work. The advantage of such systems is "separation of concerns," which
+is a common theme in computer science. In this instance we separate
+the gradient computations into separate classes which represent
+operations for computing predictions, so that the person who writes
+the fit() method of the learning algorithm just needs to compose
+instances of these classes, and does not need to understand the
+details of the gradient computations.
 
 ** Class: InitialNode
 

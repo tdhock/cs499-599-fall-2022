@@ -56,7 +56,7 @@ that week, 11:59PM.
   training linear model and neural networks using torch.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]].
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6]].
-- Oct 10, Homework week 7:
+- Oct 10, [[file:homeworks/07-auto-diff.org][Homework week 7]]:
   implementing an automatic differentiation system.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Automatic differentiation.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.5]].
