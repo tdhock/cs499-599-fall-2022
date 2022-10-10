@@ -32,6 +32,7 @@ for set_name, is_set in is_set_dict.items():
     set_labels[set_name] = spam_labels[is_set]
 {set_name:array.shape for set_name, array in set_features.items()}
 
+import torch
 class CSV(torch.utils.data.Dataset):
     def __init__(self, features, labels):
         self.features = features
@@ -50,7 +51,6 @@ batch_features
 batch_features.shape
 batch_labels
 
-import torch
 class LinearModel(torch.nn.Module):
     def __init__(self, num_inputs):
         super(LinearModel, self).__init__()
@@ -124,10 +124,10 @@ np.mean(np.log(1+np.exp(-label_neg_pos * pred_vec.detach().numpy())))
 
 model = Net(ncol, 100, 10, 1)
 loss_fun = torch.nn.BCEWithLogitsLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 loss_df_list = []
 # gradient descent 
-MAX_EPOCHS = 10
+MAX_EPOCHS = 100
 for epoch in range(MAX_EPOCHS):
     for batch_features, batch_labels in dl:
         optimizer.zero_grad()
@@ -148,3 +148,14 @@ for epoch in range(MAX_EPOCHS):
             "epoch":epoch
         }, index=[0]))
 loss_df =pd.concat(loss_df_list)
+
+import plotnine as p9
+gg = p9.ggplot()+\
+    p9.geom_line(
+        p9.aes(
+            x="epoch",
+            y="loss",
+            color="set_name"
+        ),
+        data=loss_df)
+gg.save("06_torch_linear_model.png")
