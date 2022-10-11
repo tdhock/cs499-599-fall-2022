@@ -65,6 +65,48 @@ be no code that is specific to nearest neighbors).
   GridSearchCV+KNeighborsClassifier and LogisticRegressionCV.
 - Does your implementation get similar test accuracy as scikit-learn?
   (it should!)
+
+*** Code Skeleton
+
+#+begin_src python
+  class MyKNN:
+      def __init__(self, n_neighbors):
+	  """store n_neighbors as attribute"""
+      def fit(self, X, y):
+	  """store data."""
+      def decision_function(self, X):
+	  """compute vector of predicted scores.
+	  Larger values mean more likely to be in positive class."""
+      def predict(self, X):
+	  """compute vector of predicted labels."""
+  class MyCV:
+      def __init__(self, estimator, param_grid, cv):
+	  """estimator: learner instance
+	  param_grid: list of dictionaries
+	  cv: number of folds"""
+      def fit_one(self, param_dict, X, y):
+	  """Run self.estimator.fit on one parameter combination"""
+      def fit(self, X, y):
+	  """cross-validation for selecting the best dictionary in param_grid"""
+	  validation_df_list = []
+	  for validation_fold in range(self.cv):
+	      for param_dict in self.param_grid:
+		  self.fit_one(param_dict, **split_data["subtrain"])
+		  validation_row = "DataFrame with columns validation_fold, accuracy_percent, and keys from param_grid"
+		  validation_df_list.append(validation_row)
+	  validation_df = pd.concat(validation_df_list)
+	  best_param_dict = "compute mean validation accuracy, then maximize"
+	  self.fit_one(best_param_dict, X, y)
+      def predict(self, X):
+	  self.estimator.predict(X)
+  data_dict = {"spam":TODO, "zip":TODO}
+  test_acc_df_list = []
+  for data_name, TODO in data_dict.items():
+      for test_fold, indices in enumerate(kf.split(TODO)):
+	  "fit(train data), then predict(test data), then store accuracy"
+	  test_acc_df_list.append(test_row)
+  test_acc_df = pd.concat(test_acc_df_list)
+#+end_src
   
 *** Extra credit
 
