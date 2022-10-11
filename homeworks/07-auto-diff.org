@@ -1,7 +1,7 @@
 Backprop algorithm and training neural networks from scratch
 
 Like last week, the goal is to implement a stochastic gradient descent
-algorithm for a neural network from scratch. Last week we used torch
+algorithm for a neural network. Last week we used torch
 to implement the backpropagation algorithm. This week we will break
 the gradient computation into several different classes in order to
 demonstrate how "automatic differentiation" systems like torch
