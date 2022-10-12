@@ -4,3 +4,120 @@ In previous weeks you have implemented neural networks using your
 personal computer, but the goal this week is to use the NAU Monsoon
 cluster, which provides GPUs. The goal is to show that you can greatly
 speed up neural network training using GPUs.
+
+** Login to NAU VPN
+
+To login to the Monsoon cluster, you first have to be on the NAU
+network. That means if you are on campus (for example in the
+engineering building), then you can skip this step. Otherwise, connect
+to the NAU VPN.
+
+** Login to the cluster
+
+#+begin_src
+ssh -Y abc123@monsoon.hpc.nau.edu
+#+end_src
+
+- Replace abc123 with your NAU user ID.
+- the -Y flag is for X forwarding, so you can run GUI apps on the
+  cluster, and see the windows on your PC screen. See
+  https://tdhock.github.io/blog/2019/cygwin-x-forwarding/ for
+  more detailed instructions on windows.
+
+After connecting your prompt should indicate that you are on the login
+node, wind.
+
+#+begin_src
+th798@cmp2986 ~
+$ DISPLAY=:0.0 ssh -Y monsoon.hpc.nau.edu
+th798@monsoon.hpc.nau.edu's password:
+Last login: Mon Oct  3 11:00:58 2022 from 134.114.109.172
+
+################################################################################
+#
+# Welcome to Monsoon - login node: [wind]
+#
+# Red Hat Enterprise Linux release 8.6 (Ootpa) - Kernel: 4.18.0-372.19.1.el8_6.x86_64
+# slurm 21.08.8-2
+#
+# You are logged in as th798
+#
+# Information:
+# - Monsoon now running Enterprise Linux 8
+# - /scratch : files auto DELETED after 30 days
+#
+# Issues or questions: ask-arc@nau.edu
+#
+# Upcoming maintenance on:
+# - TBD
+#
+# Random tip:
+#   "sprio -l" -- List the priority of all jobs in the pending queue
+#
+################################################################################
+
+(emacs1) th798@wind:~$ 
+#+end_src
+  
+** Install your conda environment
+
+First to get access to conda on the cluster you
+
+module load anaconda3
+
+conda init
+
+bash (or re-login)
+
+conda env create -f https://raw.githubusercontent.com/tdhock/cs499-599-fall-2022/master/environment.yml
+
+conda activate cs499f22
+
+python -c 'import torch'
+
+Then after logging in again, you should already have conda setup, so
+no need to re-run the =module load= or =conda init= commands. You
+still do need to activate the conda environment though.
+
+** Using srun
+
+To test the cluster functionality, make a script named torch_test.py
+with the following contents:
+
+#+begin_src python
+  import socket
+  import torch
+  print("cuda=%s on %s"%(
+      torch.cuda.is_available(),
+      socket.gethostname()))
+#+end_src
+
+srun is used to run a command on another cluster node.
+
+#+begin_src
+(emacs1) th798@wind:~$ python torch_test.py
+cuda=False on wind
+(emacs1) th798@wind:~$ srun python torch_test.py
+cuda=False on cn68
+(emacs1) th798@wind:~$ srun --gres=gpu:tesla:1 python torch_test.py
+cuda=True on cn32
+#+end_src
+
+#+begin_src shell-script
+srun -t 24:00:00 --gres=gpu:tesla:1 --mem=8GB --cpus-per-task=1 --pty bash
+#+end_src
+
+#+begin_src
+(emacs1) th798@wind:~$ time srun -t 1:00:00 --gres=gpu:tesla:1 --mem=8GB --cpus-per-task=1 python torch_test.py
+cuda=True on cn32
+
+real    0m2.152s
+user    0m0.010s
+sys     0m0.008s
+(emacs1) th798@wind:~$ time srun -t 1:00:00 --mem=8GB --cpus-per-task=1 python torch_test.py
+cuda=False on cn20
+
+real    0m2.319s
+user    0m0.015s
+sys     0m0.002s
+#+end_src

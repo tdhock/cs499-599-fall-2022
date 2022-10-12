@@ -628,7 +628,7 @@ backpropagation (0-3).
 \end{frame}
 
 \begin{frame}
-  \frametitle{Detailed computation graph for linear model}
+  \frametitle{Detailed computation graph for linear model for regression}
   \begin{itemize}
   \item Example: square loss $\ell(a^{(1)}, y) = (a^{(1)}-y)^2 = d^2$,
   \item Mean squared error: $J = \sum_{i=1}^n \ell(a_i^{(1)}, y_i)/n=\sum_{i=1}^n s_i/n$.
@@ -775,12 +775,34 @@ loss_subtrain = loss_fun(
 
 \end{frame}
 
+
+\begin{frame}[fragile]
+  \frametitle{Neural network for regression: square loss}
+
+\begin{verbatim}
+net = Net()
+loss_fun = torch.nn.MSELoss() #The only change!
+optimizer = torch.optim.SGD(net.parameters(), lr=0.03)
+
+# to do in a loop:
+optimizer.zero_grad()
+loss_value = loss_fun(net(inputs), outputs) 
+# outputs are real numbers, not 0/1 binary classes.
+loss_value.backward() # auto grad
+optimizer.step() # learning
+\end{verbatim}
+
+\end{frame}
+
+
 \begin{frame}[fragile]
   \frametitle{Copy data from numpy and onto GPU}
   \begin{itemize}
   \item Torch is very similar to numpy (tensor data types, vectorized
     functions and methods).
   \item Can easily run on GPU for speedups, but need to copy neural network weights and data to GPU memory.
+  \item Request a GPU on Monsoon via --gres=gpu:tesla:1 flag to
+    srun/sbatch.
   \end{itemize}
 \begin{verbatim}
 device = "cuda" if torch.cuda.is_available() else "cpu"
