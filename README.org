@@ -60,26 +60,22 @@ that week, 11:59PM.
   implementing an automatic differentiation system.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Automatic differentiation.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.5]].
-- Oct 17, Homework week 8: other loss functions, for regression and
-  multi-class classification.
-- Oct 24, week 9 review and exam.
+- Oct 17, Homework week 8: neural networks for regression.
+  - Exam 1 review/solutions Fri Oct 21.
+- Oct 24, week 9 review and exam 2.
   - No class Mon Oct 24.
-  - Exam review is Weds Oct 26.
+  - Exam 2 preview/solutions for extra credit is Weds Oct 26.
   - Exam is Fri Oct 28, in class. During the exam you are allowed to
     use one page of handwritten notes.
   - [[file:exams/spring_2022_mid_term_exam_2_practice.pdf][Practice exam 2 PDF]].
-- Oct 31, Homework week 10: regularizing neural networks.
+- Oct 31, Homework week 10: neural networks for multi-class classification.
+- Nov 7, Homework week 11: regularizing neural networks.
   - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
-- Nov 7, Homework week 11: optimization.
+- Nov 14, Homework week 12: optimization.
   - Reading [[https://www.deeplearningbook.org/contents/optimization.html][DL8]].
-- Nov 14, Homework week 12: convolutional networks.
+- Nov 21, Homework week 13: convolutional networks.
   - Reading [[https://www.deeplearningbook.org/contents/convnets.html][DL9]].
-- Nov 21, Homework week 13: learning text embeddings, recurrent networks.
-  - Reading [[https://www.deeplearningbook.org/contents/rnn.html][DL10]].
-- Nov 28, Homework week 14: interpretability via attention mechanism.
-  - Readings: [[https://faculty.cc.gatech.edu/~dyang888/docs/naacl16.pdf][Yang et al, 2016]], [[https://blog.floydhub.com/gru-with-pytorch/][GRU vs LSTM]], [[https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html][PyTorch translation
-    attention tutorial using GRU]], [[https://medium.com/intel-student-ambassadors/implementing-attention-models-in-pytorch-f947034b3e66][Another attention tutorial using
-    LSTM]].
+- Nov 28, Homework week 14: learning on a cluster/GPU.
 - Dec 5, reading week, exam review TODO DATE.
 - Final exam, Weds Dec 14, 8-9:30AM.
 
