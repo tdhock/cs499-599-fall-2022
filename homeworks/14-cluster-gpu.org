@@ -1,0 +1,6 @@
+Learning on a cluster/GPU
+
+In previous weeks you have implemented neural networks using your
+personal computer, but the goal this week is to use the NAU Monsoon
+cluster, which provides GPUs. The goal is to show that you can greatly
+speed up neural network training using GPUs.

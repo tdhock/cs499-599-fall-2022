@@ -60,7 +60,7 @@ that week, 11:59PM.
   implementing an automatic differentiation system.
   - [[file:slides/torch-part1/06-backprop.pdf][Slides]], section Automatic differentiation.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.5]].
-- Oct 17, Homework week 8: neural networks for regression.
+- Oct 17, [[file:homeworks/08-regression.org][Homework week 8]]: neural networks for regression.
   - Exam 1 review/solutions Fri Oct 21.
 - Oct 24, week 9 review and exam 2.
   - No class Mon Oct 24.
@@ -68,14 +68,17 @@ that week, 11:59PM.
   - Exam is Fri Oct 28, in class. During the exam you are allowed to
     use one page of handwritten notes.
   - [[file:exams/spring_2022_mid_term_exam_2_practice.pdf][Practice exam 2 PDF]].
-- Oct 31, Homework week 10: neural networks for multi-class classification.
-- Nov 7, Homework week 11: regularizing neural networks.
+- Oct 31, [[file:homeworks/10-multi-class.org][Homework week 10]]: neural networks for multi-class
+  classification.
+  - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.2]], especially section 6.2.2.3 Softmax Units for
+    Multinoulli Output Distributions.
+- Nov 7, [[file:homeworks/11-regularization.org][Homework week 11]]: regularizing neural networks.
   - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
-- Nov 14, Homework week 12: optimization.
+- Nov 14, [[file:homeworks/12-optimization.org][Homework week 12]]: optimization.
   - Reading [[https://www.deeplearningbook.org/contents/optimization.html][DL8]].
-- Nov 21, Homework week 13: convolutional networks.
+- Nov 21, [[file:homeworks/13-convolutional-networks.org][Homework week 13]]: convolutional networks.
   - Reading [[https://www.deeplearningbook.org/contents/convnets.html][DL9]].
-- Nov 28, Homework week 14: learning on a cluster/GPU.
+- Nov 28, [[file:homeworks/14-cluster-gpu.org][Homework week 14]]: learning on a cluster/GPU.
 - Dec 5, reading week, exam review TODO DATE.
 - Final exam, Weds Dec 14, 8-9:30AM.
 

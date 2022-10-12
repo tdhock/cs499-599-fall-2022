@@ -1,17 +1,16 @@
-Backprop algorithm and training neural networks from scratch
+Neural networks for multi-class classification
 
 Like last week, the goal is to implement a stochastic gradient descent
-algorithm for a neural network. Last week we used torch
-to implement the backpropagation algorithm. This week we will break
-the gradient computation into several different classes in order to
-demonstrate how "automatic differentiation" systems like torch
-work. The advantage of such systems is "separation of concerns," which
-is a common theme in computer science. In this instance we separate
-the gradient computations into separate classes which represent
-operations for computing predictions, so that the person who writes
-the fit() method of the learning algorithm just needs to compose
-instances of these classes, and does not need to understand the
-details of the gradient computations.
+algorithm for a neural network. So far in class we have focused on
+binary classification, which is when the label is either 1 or 0
+(positive or negative, spam or not, etc), by using the logistic loss
+(sometimes class binary cross-entropy loss). This week we will
+implement learning algorithms for multi-class classification, by using
+the cross entropy / multinomial loss.
+
+- For multi-class classification, use [[https://pytorch.org/vision/stable/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST][MNIST]] data and
+  [[https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html?highlight=cross#torch.nn.CrossEntropyLoss][torch.nn.CrossEntropyLoss]].
+- For regression, use TODO data and [[https://pytorch.org/docs/stable/generated/torch.nn.MSELoss.html#torch.nn.MSELoss][torch.nn.MSELoss]].
 
 ** Class: InitialNode
 
@@ -110,8 +109,8 @@ own automatic differentiation classes.
 - fit(X=subtrain_features, y=subtrain_labels) method should run
   gradient descent until max_epochs is reached. There should be two
   for loops, first over epochs, then over batches. You should use the
-  take_step method on each batch. Compute the subtrain/validation loss
-  at the end of each epoch.
+  take_step method on each batch. Compute the
+  subtrain/validation loss at the end of each epoch.
 - decision_function(X=test_features) method should return a numpy
   array of real number predicted scores given the current weights in
   the neural network. Hint: just call get_pred_node then return the
@@ -197,15 +196,15 @@ epoch.
 	  """Return numpy vector of predicted classes"""
   class AutoGradLearnerCV:
       def __init__(self, max_epochs, batch_size, step_size, units_per_layer):
-	  self.subtrain_model = AutoMLP(TODO)
+	  self.model = AutoMLP(TODO)
       def fit(self, X, y):
 	  """cross-validation for selecting the best number of epochs"""
-	  self.subtrain_model.validation_data = TODO
-	  self.subtrain_model.fit(TODO_SUBTRAIN_DATA)
-          self.train_model = AutoMLP(max_epochs = best_epochs)
-	  self.train_model.fit(TODO_TRAIN_DATA)
+	  self.model.validation_data = TODO
+	  self.model.fit(TODO_SUBTRAIN_DATA)
+	  self.model.max_epochs = best_epochs
+	  self.model.fit(TODO_TRAIN_DATA)
 	def predict(self, X):
-	    self.train_model.predict(X)
+	    self.model.predict(X)
   data_dict = {"spam":TODO, "zip":TODO}
   test_acc_df_list = []
   for data_name, TODO in data_dict.items():
@@ -245,9 +244,9 @@ epoch.
 - Show your MyLogRegCV learner from week 4 on your test accuracy
   plot. How does it compare to your code this week? (it should be
   about the same)
-- Show your TorchLearnerCV (deep and linear) results from last week on
-  your test accuracy plot. Is it more accurate than your code this
-  week, or about the same? (it should be about the same if both were
+- Show your TorchLearnerCV results from last week on your test
+  accuracy plot. Is it more accurate than your code this week, or
+  about the same? (it should be about the same if both were
   implemented correctly)
 - Implement learning an intercept for every hidden/output unit, as an
   instantiation parameter in AutoMLP(intercept=True). Show both
