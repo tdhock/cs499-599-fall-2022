@@ -572,6 +572,10 @@ backpropagation (0-3).
     \texttt{gradient} methods which implement details of
     forward/back-prop, results are stored as \texttt{value}/\texttt{grad}
     attributes.
+  \item Don't get confused! Parent class (sub-classes of
+    \texttt{Operation} inherit methods/attributes) not the same as
+    parent node (child node is an instance of an \texttt{Operation}
+    sub-class, and has parent nodes as attributes). 
   \end{itemize}
 \end{frame}
 
