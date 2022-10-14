@@ -34,16 +34,19 @@ for set_name, is_set in is_set_dict.items():
 
 nrow, ncol = set_features["subtrain"].shape
 feature_mat = set_features["subtrain"]
-label_vec = set_labels["subtrain"]
-weight_vec = np.random.randn(ncol)
+label_vec = set_labels["subtrain"].reshape(nrow, 1)
+weight_vec = np.random.randn(ncol).reshape(ncol, 1)
 
 class InitialNode:
-    def __init__(self, value):
+    def __init__(self, value, name):
         self.value = value
+        self.name = name
+    def backward(self):
+        print("backward from "+self.name)
 
-weight_node = InitialNode(weight_vec)
-feature_node =InitialNode(feature_mat)
-label_node = InitialNode(label_vec)
+weight_node = InitialNode(weight_vec, "weight")#w
+feature_node =InitialNode(feature_mat, "feature")#h
+label_node = InitialNode(label_vec, "label") #y
 
 class Operation:
     def __init__(self, *node_list):
@@ -53,7 +56,10 @@ class Operation:
     def backward(self):
         grad_tuple = self.gradient()
         # store each gradient in the corresponding parent_node.grad
-        # call parent_node.backward()
+        for index in range(len(grad_tuple)):
+            parent_node = getattr(self, self.input_names[index])
+            parent_node.grad = grad_tuple[index]
+            parent_node.backward()
         
 class mean_logistic_loss(Operation):
     input_names = ["pred_vec", "subtrain_labels"]
@@ -63,13 +69,18 @@ class mean_logistic_loss(Operation):
     def gradient(self):
         return [
             -self.subtrain_labels.value/(
-                1+np.exp(self.subtrain_labels.value * self.pred_vec.value)),
+                1+np.exp(self.subtrain_labels.value * self.pred_vec.value)
+            )/len(self.subtrain_labels.value),
             "gradient with respect to labels"]
 
 class mm(Operation):
     input_names = ["features", "weights"]
     def get_value(self):
         return np.matmul(self.features.value, self.weights.value)
+    def gradient(self):
+        return [
+            np.matmul(self.grad, self.weights.value.T),
+            np.matmul(self.features.value.T, self.grad)]
 
 class relu(Operation):
     input_names = ["features_before_activation"]
@@ -77,9 +88,16 @@ class relu(Operation):
         return np.where(
             features_before_activation.value > 0, 
             features_before_activation.value, 0)
+    def gradient(self):
+        return [
+            np.where(self.features_before_activation < 0, 0, self.grad)]
 
 pred_node = mm(feature_node, weight_node)
 loss_node = mean_logistic_loss(pred_node, label_node)
 loss_node.backward()
+pred_node.grad.shape
+weight_node.value.shape
 weight_node.grad
+# gradient descent (one step)
+weight_node.value -= step_size * weight_node.grad
 act_node = relu(pred_node)
