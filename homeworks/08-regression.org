@@ -183,6 +183,16 @@ Like with previous homeworks,
   sub-class for the square loss). Show these on your test error plot
   --- do they have similar test error rates as the corresponding torch
   learners?
+- Compare predicting log-transformed outputs in forestfires data, to
+  not using log transform, what is more accurate?
+- Compare one hot encoding to numeric encoding of month,day columns in
+  forestfires data. Also compare ignore these columns, and use both
+  kinds of encodings. Which of the four methods is more accurate? (+10
+  for each additional method you compare with on the test error plot)
+- Make a plot of test r-squared (coefficient of determination between
+  prediction vector and label vector -- this is a common measure of
+  accuracy for regression problems, and maximizing it is equivalent to
+  minimizing MSE), in addition to a plot of mean squared test error.
   
 ** FAQ
 
