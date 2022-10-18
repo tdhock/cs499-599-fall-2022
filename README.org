@@ -67,7 +67,7 @@ that week, 11:59PM.
   - Exam 2 preview/solutions for extra credit is Weds Oct 26.
   - Exam is Fri Oct 28, in class. During the exam you are allowed to
     use one page of handwritten notes.
-  - [[file:exams/spring_2022_mid_term_exam_2_practice.pdf][Practice exam 2 PDF]].
+  - [[file:exams/exam2_practice.pdf][Practice exam 2 PDF]].
 - Oct 31, [[file:homeworks/10-multi-class.org][Homework week 10]]: neural networks for multi-class
   classification.
   - Reading [[https://www.deeplearningbook.org/contents/mlp.html][DL6.2]], especially section 6.2.2.3 Softmax Units for
