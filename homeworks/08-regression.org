@@ -160,7 +160,9 @@ Like with previous homeworks,
 	  self.train_learner.fit(TODO_TRAIN_DATA)
 	def predict(self, X):
 	    self.train_learner.predict(X)
-  data_dict = {"forest_fires":TODO, "airfoil_self_noise":TODO}
+  data_dict = {
+      "forest_fires":(SCALED_FEATURES, SCALED_LABELS),
+      "airfoil_self_noise":(SCALED_FEATURES, SCALED_LABELS)}
   test_error_df_list = []
   for data_name, TODO in data_dict.items():
       model_units = {

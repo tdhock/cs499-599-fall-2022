@@ -95,6 +95,7 @@ class relu(Operation):
 pred_node = mm(feature_node, weight_node)
 loss_node = mean_logistic_loss(pred_node, label_node)
 loss_node.backward()
+optimizer.step()
 pred_node.grad.shape
 weight_node.value.shape
 weight_node.grad
