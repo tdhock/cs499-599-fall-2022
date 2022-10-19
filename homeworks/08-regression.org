@@ -112,6 +112,10 @@ train/test splits defined by KFold), with these differences:
   square loss values, for at least the following algorithms:
   feautureless, KNeighborsRegressor+GridSearchCV, LassoCV,
   TorchLearnerCV_linear, TorchLearnerCV_deep.
+- Make sure to scale the labels as well as the features! (subtract
+  away mean, divide by sd) If the labels are too large than the loss
+  will be too large and the gradients will not be helpful for learning
+  (we call this numerical instability).
 
 Like with previous homeworks,
 - Make sure to scale the data before putting them into the data_dict
@@ -204,3 +208,7 @@ Like with previous homeworks,
   (max_epochs, batch_size, step_size, units_per_layer) which results
   in the characteristic loss curves (subtrain almost always
   decreasing, validation U shaped as number of epochs increases).
+- Why is my subtrain loss going down but my validation loss is going
+  up right away in the first iteration of gradient descent? Maybe the
+  gradients are not informative, because the loss is too large. Did
+  you scale your outputs/labels? (subtract away mean, divide by sd)

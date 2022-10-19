@@ -14,12 +14,17 @@ airfoil_sd = np.sqrt(airfoil_features.var(axis=0))
 scaled_features = (airfoil_features-airfoil_mean)/airfoil_sd
 scaled_features.mean(axis=0)
 scaled_features.var(axis=0)
+label_mean = airfoil_labels.mean()
+label_sd = np.sqrt(airfoil_labels.var())
+scaled_labels = (airfoil_labels-label_mean)/label_sd
+scaled_labels.mean()
+scaled_labels.var()
 
 # 2. subtrain/validation split.
 np.random.seed(1)
 n_folds = 5
 fold_vec = np.random.randint(low=0, high=n_folds, size=airfoil_labels.size)
-validation_fold = 0
+validation_fold = 1
 is_set_dict = {
     "validation":fold_vec == validation_fold,
     "subtrain":fold_vec != validation_fold,
@@ -29,7 +34,7 @@ set_features = {}
 set_labels = {}
 for set_name, is_set in is_set_dict.items():
     set_features[set_name] = scaled_features[is_set,:]
-    set_labels[set_name] = airfoil_labels[is_set]
+    set_labels[set_name] = scaled_labels[is_set]
 {set_name:array.shape for set_name, array in set_features.items()}
 
 nrow, ncol = set_features["subtrain"].shape
@@ -100,4 +105,51 @@ weight_node.grad
 # gradient descent (one step)
 step_size=0.1
 weight_node.value -= step_size * weight_node.grad
-act_node = relu(pred_node)
+
+class AutoReg:
+    def __init__(self, step_size=0.1, max_epochs=100):
+        self.step_size = step_size
+        self.max_epochs = max_epochs
+        self.weight_vec = np.random.randn(ncol).reshape(ncol, 1)/1000
+        self.weight_node = InitialNode(self.weight_vec, "weight")#w
+    def get_loss_node(self, feature_mat, label_vec):
+        feature_node =InitialNode(feature_mat, "feature")#h
+        label_node = InitialNode(label_vec, "label") #y
+        pred_node = mm(feature_node, self.weight_node)
+        return mean_squared_error(pred_node, label_node)
+    def take_step(self, feature_mat, label_vec):
+        "Updates weights with weight grad"
+        self.loss_node = self.get_loss_node(feature_mat, label_vec)
+        self.loss_node.backward()
+        self.weight_node.value -= self.step_size * self.weight_node.grad
+    def fit(self, train_features, train_labels):
+        loss_df_list = []
+        for epoch in range(self.max_epochs):
+            self.take_step(train_features, train_labels)
+            for set_name in set_features:
+                set_X = set_features[set_name]
+                set_y = set_labels[set_name]
+                loss_node = self.get_loss_node(set_X, set_y)
+                loss_df_list.append(pd.DataFrame({
+                    "epoch":epoch,
+                    "loss":loss_node.value,
+                    "set_name":set_name
+                }, index=[0]))
+        self.loss_df = pd.concat(loss_df_list)
+learner_obj = AutoReg()
+learner_obj.weight_vec
+learner_obj.take_step(set_features["subtrain"], set_labels["subtrain"])
+learner_obj.loss_node.value
+learner_obj.fit(set_features["subtrain"], set_labels["subtrain"])
+learner_obj.loss_df
+
+import plotnine as p9
+gg = p9.ggplot()+\
+    p9.geom_line(
+        p9.aes(
+            x="epoch",
+            y="loss",
+            color="set_name",
+        ),
+        data=learner_obj.loss_df)
+gg.save("08_regression.png")
