@@ -122,10 +122,10 @@ class AutoReg:
         self.loss_node = self.get_loss_node(feature_mat, label_vec)
         self.loss_node.backward()
         self.weight_node.value -= self.step_size * self.weight_node.grad
-    def fit(self, train_features, train_labels):
+    def fit(self, subtrain_features, subtrain_labels):
         loss_df_list = []
         for epoch in range(self.max_epochs):
-            self.take_step(train_features, train_labels)
+            self.take_step(subtrain_features, subtrain_labels)
             for set_name in set_features:
                 set_X = set_features[set_name]
                 set_y = set_labels[set_name]
