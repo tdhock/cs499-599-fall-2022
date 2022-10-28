@@ -10,7 +10,9 @@ the cross entropy / multinomial loss.
 
 - For multi-class classification, use [[https://pytorch.org/vision/stable/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST][MNIST]] data and
   [[https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html?highlight=cross#torch.nn.CrossEntropyLoss][torch.nn.CrossEntropyLoss]].
-- For regression, use TODO data and [[https://pytorch.org/docs/stable/generated/torch.nn.MSELoss.html#torch.nn.MSELoss][torch.nn.MSELoss]].
+- https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html
+  explains that output layer should be linear, with same number of
+  outputs as classes, and you can use the [[https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html?highlight=cross#torch.nn.CrossEntropyLoss][torch.nn.CrossEntropyLoss]].
 
 ** Class: InitialNode
 
