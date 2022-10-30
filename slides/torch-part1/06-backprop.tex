@@ -679,6 +679,103 @@ backpropagation (0-3).
   \end{itemize}
 \end{frame}
 
+\section{Multi-class classification}
+
+\begin{frame}
+  \frametitle{Review of logistic loss for binary classification}
+  \includegraphics[width=0.7\textwidth]{2022-02-15-simplex-binary-loss-scores.png}
+
+  \begin{itemize}
+  \item For binary classification we have labels $y\in\{-1,1\}$.
+  \item Let $f(x)=\hat y\in\mathbb R$ be the predicted score (output
+    of neural network).
+  \item The logistic loss is $\ell(\hat y, y) = \log[1+\exp(\hat y y)]$.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Probabilistic interpretation of logistic loss}
+  \includegraphics[width=0.7\textwidth]{2022-02-15-simplex-binary-loss-prob.png}
+
+  \begin{itemize}
+  \item Let $y\in\{0,1\}$ be the binary class label.
+  \item Let $\hat p_1=1/(1+\exp(-\hat y))\in (0,1)$ be the predicted probability
+    of class 1 (positive), output by the neural network.
+  \item Then $\hat p_0 = 1-\hat p_1$ is the predicted probability of
+    negative class.
+  \item Then the logistic loss is the negative log
+    probability/likelihood of the label class,
+    \begin{eqnarray*}
+      \ell(\hat y, y) 
+      % &=& -\log[\hat p_1 I(y=1) + \hat p_0 I(y=0)] \\
+        &=& \begin{cases}
+              -\log[\hat p_1] & \text{ if label is positive, } y=1 \\
+              -\log[\hat p_0] & \text{ if label is negative, } y=0
+            \end{cases}\\
+        &=& -\log[\hat p_y].
+    \end{eqnarray*}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multi-class loss and softmax function}
+
+  \begin{itemize}
+  \item We assume there are $K\geq 2$ classes of labels,
+    $y\in\{0,1, \dots, K-1\}$.
+  \item For a given input $x$, the learned function (neural network)
+    outputs $f(x) = [\hat p_0,\hat p_1,\dots,\hat p_{K-1}]$.
+  \item The loss function to minimize via gradient descent is the
+    negative log likelihood of the label class, $\ell[f(x),y] = -\log \hat p_y.$
+  \item The neural network last linear layer outputs $K$
+    units/features (real numbers from matrix multiplication, possibly
+    negative), one for each class:
+    $\hat y_0,\hat y_1,\dots, \hat y_{K-1}\in\mathbb R$.
+  \item To convert to a vector of probability values, we use the
+    softmax function, 
+$$ \text{softmax}(\hat y_0, \dots, \hat y_{K-1}) = 
+\left[ \frac{\exp\hat y_0}{\sum_{j=0}^{K-1} \exp\hat y_j}, \dots,
+\frac{\exp\hat y_{K-1}}{\sum_{j=0}^{K-1} \exp\hat y_j}\right].
+$$
+\item (exp converts to positive, division normalizes to one)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Visualization of loss functions for 3 class problem}
+  
+  \includegraphics[width=0.7\textwidth]{2022-02-15-simplex-multi-logistic}
+
+  \includegraphics[width=0.7\textwidth]{2022-02-15-simplex-multi-zero-one}
+
+  \begin{itemize}
+  \item Each point in 3-simplex is a probability triple
+    $(p_0,p_1,p_2)$.
+  \item Points are max prob.c for one class (1,0,0)
+    or (0,1,0) or (0,0,1).
+  \item Midpoint when classes have equal probability
+    $(1/3, 1/3, 1/3)$.
+  \item Zero-one loss =0 when label class most probable.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Binary as a special case 1}
+
+  \begin{itemize}
+  \item A neural network for $K$ classes which outputs $K$ features is
+    actually over-parameterized (but easy to code).
+  \item For $K$ classes, we only need $K-1$ outputs (fewer parameters
+    in last weight matrix, more computationally efficient).
+  \item TODO
+  \end{itemize}
+  
+\end{frame}
+
+
+
 \section{Torch}
 
 \begin{frame}
