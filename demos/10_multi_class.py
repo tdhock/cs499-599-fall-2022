@@ -1,3 +1,5 @@
+import torchvision
+import torch
 import pandas as pd
 import numpy as np
 zip_df = pd.read_csv(
@@ -7,11 +9,38 @@ zip_df = pd.read_csv(
 out_col = 0
 is_output = zip_df.columns == out_col
 zip_features = zip_df.iloc[:,is_output==False].to_numpy()
+nrow, ncol = zip_features.shape
 zip_labels = zip_df.iloc[:,is_output]
 zip_label_vec = zip_labels.to_numpy().reshape(nrow)
 label_counts = zip_labels.value_counts()
-nrow, ncol = zip_features.shape
 n_classes = len(label_counts.index)
+
+class TorchModel(torch.nn.Module):
+    def __init__(self, *units_per_layer):
+        super(TorchModel, self).__init__()
+        seq_args = []
+        for layer_i in range(len(units_per_layer)-1):
+            units_in = units_per_layer[layer_i]
+            units_out = units_per_layer[layer_i+1]
+            seq_args.append(
+                torch.nn.Linear(units_in, units_out))
+            if layer_i != len(units_per_layer)-2:
+                seq_args.append(torch.nn.ReLU())
+        self.stack = torch.nn.Sequential(*seq_args)
+    def forward(self, feature_mat):
+        return self.stack(feature_mat)
+
+zip_feature_tensor = torch.from_numpy(zip_features).float()
+zip_label_tensor = torch.from_numpy(zip_label_vec)
+net = Net(ncol, 1000, 100, n_classes)
+pred_y_hat_mat = net(zip_feature_tensor)
+pred_y_hat_mat.shape
+pred_y_hat_mat[0,]
+loss_fun = torch.nn.CrossEntropyLoss()
+loss_value = loss_fun(pred_y_hat_mat, zip_label_tensor)
+loss_value.backward()
+
+## TODO weds.
 np.random.seed(1)
 weight_sd = 100
 weight_mat = np.random.randn(ncol, n_classes-1)*weight_sd
@@ -69,8 +98,6 @@ zero_one_mat[np.arange(batch_size), batch_labels] = 1
 stable_grad_mat = stable_prob_mat - zero_one_mat
 stable_grad_mat - naive_grad_mat
 
-import torchvision
-import torch
 ds = torchvision.datasets.MNIST(
     root="~/teaching/cs499-599-fall-2022/data", 
     download=True,

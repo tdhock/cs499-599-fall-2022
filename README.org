@@ -70,6 +70,7 @@ that week, 11:59PM.
   - [[file:exams/exam2_practice.pdf][Practice exam 2 PDF]].
 - Oct 31, [[file:homeworks/10-multi-class.org][Homework week 10]]: neural networks for multi-class
   classification.
+  - [[file:slides/torch-part1/06-backprop.pdf][Slides]]. 
   - Reading [[https://hastie.su.domains/ElemStatLearn/printings/ESLII_print12.pdf][ESL4.4]], [[https://www.deeplearningbook.org/contents/mlp.html][DL6.2]], especially section 6.2.2.3 Softmax Units for
     Multinoulli Output Distributions.
 - Nov 7, [[file:homeworks/11-regularization.org][Homework week 11]]: regularizing neural networks.
