@@ -66,7 +66,7 @@ instead of your own implementation of gradients.
 
 This class should be very similar to your week 6 code, and should
 implement hyper-parameter learning (select the number of epochs which
-is minimizes loss on validation set, use square loss instead of
+minimizes loss on validation set, use square loss instead of
 logistic loss).
 
 This class should have a fit method that splits train into subtrain
@@ -180,7 +180,7 @@ Like with previous homeworks,
 ** Extra credit
 
 - Implement learning an intercept for every hidden/output unit, as an
-  instantiation parameter in AutoMLP(intercept=True). Show both
+  instantiation parameter in TorchModel(intercept=True). Show both
   intercept=True and False on your test accuracy plot: which is more
   accurate, or are they about the same? (it should be about the same,
   maybe a little more accurate with intercept)
