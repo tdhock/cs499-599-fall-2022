@@ -32,7 +32,7 @@ class TorchModel(torch.nn.Module):
 
 zip_feature_tensor = torch.from_numpy(zip_features).float()
 zip_label_tensor = torch.from_numpy(zip_label_vec)
-net = Net(ncol, 1000, 100, n_classes)
+net = TorchModel(ncol, 1000, 100, n_classes)
 pred_y_hat_mat = net(zip_feature_tensor)
 pred_y_hat_mat.shape
 pred_y_hat_mat[0,]
@@ -43,10 +43,11 @@ loss_value.backward()
 ## TODO weds.
 np.random.seed(1)
 weight_sd = 100
+weight_sd = 1
 weight_mat = np.random.randn(ncol, n_classes-1)*weight_sd
 weight_mat.shape
 
-batch_size = 3
+batch_size = 6
 batch_features = zip_features[:batch_size, :]
 batch_labels = zip_label_vec[:batch_size]
 
@@ -89,15 +90,24 @@ stable_loss_vec = L_vec - pred_z_mat[
 stable_loss_vec - naive_loss_vec
 
 stable_prob_mat = np.exp(pred_z_mat-L_vec)
-stable_prob_mat - naive_prob_mat
+np.abs(stable_prob_mat - naive_prob_mat).max()
 
 analyze_prob_mat(stable_prob_mat)
 
 zero_one_mat = np.zeros((batch_size, n_classes))
 zero_one_mat[np.arange(batch_size), batch_labels] = 1
 stable_grad_mat = stable_prob_mat - zero_one_mat
-stable_grad_mat - naive_grad_mat
+np.abs(stable_grad_mat - naive_grad_mat).max()
 
+decimals=1
+for ex_i in range(batch_size):
+    print("ex_i=%d label=%d"%(ex_i,batch_labels[ex_i]))
+    print(pd.DataFrame({
+        "pred_prob":np.round(stable_prob_mat[ex_i], decimals=decimals),
+        "neg_grad":np.round(-stable_grad_mat[ex_i], decimals=decimals)
+    }))
+
+# TODO Fri loader to matrix demo.
 ds = torchvision.datasets.MNIST(
     root="~/teaching/cs499-599-fall-2022/data", 
     download=True,
