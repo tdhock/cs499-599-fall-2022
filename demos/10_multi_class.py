@@ -47,7 +47,7 @@ weight_sd = 1
 weight_mat = np.random.randn(ncol, n_classes-1)*weight_sd
 weight_mat.shape
 
-batch_size = 6
+batch_size = 600
 batch_features = zip_features[:batch_size, :]
 batch_labels = zip_label_vec[:batch_size]
 
@@ -101,11 +101,14 @@ np.abs(stable_grad_mat - naive_grad_mat).max()
 
 decimals=1
 for ex_i in range(batch_size):
-    print("ex_i=%d label=%d"%(ex_i,batch_labels[ex_i]))
-    print(pd.DataFrame({
-        "pred_prob":np.round(stable_prob_mat[ex_i], decimals=decimals),
-        "neg_grad":np.round(-stable_grad_mat[ex_i], decimals=decimals)
-    }))
+    row_label=batch_labels[ex_i]
+    prob_row = stable_prob_mat[ex_i]
+    if (prob_row > 0.1).sum() >= 2 and prob_row[row_label]>=0.6:
+        print("ex_i=%d label=%d"%(ex_i,row_label))
+        print(pd.DataFrame({
+            "pred_prob":np.round(prob_row, decimals=decimals),
+            "neg_grad":np.round(-stable_grad_mat[ex_i], decimals=decimals)
+        }))
 
 # TODO Fri loader to matrix demo.
 ds = torchvision.datasets.MNIST(

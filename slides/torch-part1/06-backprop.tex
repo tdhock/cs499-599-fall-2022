@@ -984,6 +984,27 @@ label=9
 \end{frame}
 
 \begin{frame}[fragile]
+  \frametitle{Gradient example, very bad prediction}
+\begin{verbatim}
+label=9
+   pred_prob  neg_grad
+0        0.0      -0.0
+1        0.0      -0.0
+2        0.0      -0.0
+3        0.7      -0.7
+4        0.0      -0.0
+5        0.0      -0.0
+6        0.3      -0.3
+7        0.0      -0.0
+8        0.0      -0.0
+9        0.0       1.0
+\end{verbatim}
+  Predicted 70\% class 3, 30\% class 6, label class 9, gradient says
+  to decrease prob for classes 3 and 6 (but by different amounts), and
+  increase prob for class 9.
+\end{frame}
+
+\begin{frame}[fragile]
   \frametitle{Gradient example, bad prediction}
 \begin{verbatim}
 label=3
@@ -1000,30 +1021,48 @@ label=3
 9        0.0      -0.0
 \end{verbatim}
   Predicted 10\% class 3 and 90\% class 6, label class 3, gradient
-  says to decrease prob for class 6 and increase prob for class 3 (but
-  gradient smaller than previous slide when we had 100\% wrong class).
+  says to increase prob for class 3 and decrease prob for class 6 (note
+  gradient smaller than for predicting 0\% label class).
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Gradient example, decent prediction}
+  \frametitle{Gradient example, decent but incorrect prediction}
 \begin{verbatim}
-label=6
+label=3
    pred_prob  neg_grad
 0        0.0      -0.0
-1        0.5      -0.5
+1        0.3      -0.3
 2        0.0      -0.0
-3        0.0      -0.0
+3        0.3       0.7
 4        0.0      -0.0
-5        0.0      -0.0
-6        0.5       0.5
+5        0.4      -0.4
+6        0.0      -0.0
 7        0.0      -0.0
 8        0.0      -0.0
 9        0.0      -0.0
 \end{verbatim}
-  Predicted 50\% class 1, 50\% class 6, label class 6, gradient says to
-  decrease prob for class 1 and increase prob for class 6 (gradient
-  smaller than previous slides because prediction not as bad, does not
-  need as much correction).
+  Predicted 30\% class 1, 30\% class 3, 40\% class 5, label class 3, gradient says to
+  decrease prob for class 1, increase prob for class 3, and decrease prob for class 5.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Gradient example, good prediction}
+\begin{verbatim}
+label=1
+   pred_prob  neg_grad
+0        0.0      -0.0
+1        0.6       0.4
+2        0.0      -0.0
+3        0.0      -0.0
+4        0.0      -0.0
+5        0.0      -0.0
+6        0.0      -0.0
+7        0.4      -0.4
+8        0.0      -0.0
+9        0.0      -0.0
+\end{verbatim}
+  Predicted 60\% class 1, 40\% class 7, label class 1, gradient says to
+  decrease prob for class 7 and increase prob for class 1.
 \end{frame}
 
 \begin{frame}[fragile]
