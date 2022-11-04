@@ -48,12 +48,14 @@ weight_mat.shape
 
 batch_size = 3
 batch_features = zip_features[:batch_size, :]
+batch_features.shape
 batch_labels = zip_label_vec[:batch_size]
 
 pred_y_mat = np.matmul(batch_features, weight_mat)
 pred_y_mat.shape
 pred_z_mat = np.column_stack([np.repeat(0, batch_size), pred_y_mat])
 pred_z_mat.shape
+pred_z_mat
 
 ## naive method.
 exp_mat = np.exp(pred_z_mat)
