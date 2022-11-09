@@ -47,7 +47,7 @@ weight_sd = 1
 weight_mat = np.random.randn(ncol, n_classes-1)*weight_sd
 weight_mat.shape
 
-batch_size = 600
+batch_size = 5
 batch_features = zip_features[:batch_size, :]
 batch_features.shape
 batch_labels = zip_label_vec[:batch_size]
@@ -86,13 +86,15 @@ M_vec = pred_z_mat.max(axis=1).reshape(batch_size, 1)
 inside_exp_mat = pred_z_mat-M_vec
 sum_exp_vec = np.exp(inside_exp_mat).sum(axis=1).reshape(batch_size, 1)
 L_vec = M_vec + np.log(sum_exp_vec)
-stable_loss_vec = L_vec - pred_z_mat[
+z_y_vec = pred_z_mat[
     np.arange(batch_size), batch_labels
 ].reshape(batch_size, 1)
+stable_loss_vec = L_vec - z_y_vec
 stable_loss_vec - naive_loss_vec
 
 stable_prob_mat = np.exp(pred_z_mat-L_vec)
 np.abs(stable_prob_mat - naive_prob_mat).max()
+np.round(stable_prob_mat, decimals=1)
 
 analyze_prob_mat(stable_prob_mat)
 
@@ -100,6 +102,7 @@ zero_one_mat = np.zeros((batch_size, n_classes))
 zero_one_mat[np.arange(batch_size), batch_labels] = 1
 stable_grad_mat = stable_prob_mat - zero_one_mat
 np.abs(stable_grad_mat - naive_grad_mat).max()
+np.round(stable_grad_mat, decimals=1)
 
 decimals=1
 for ex_i in range(batch_size):
@@ -121,5 +124,12 @@ ds = torchvision.datasets.MNIST(
 dl = torch.utils.data.DataLoader(ds, batch_size=len(ds), shuffle=False)
 for mnist_features, mnist_labels in dl:
     pass
-mnist_features.flatten(start_dim=1).numpy()
-mnist_labels.numpy()
+
+data_dict = {
+    "MNIST":(
+        mnist_features.flatten(start_dim=1).numpy(),
+        mnist_labels.numpy()),
+    "zip":(zip_features, zip_label_vec)
+}
+{data_name:X.shape for data_name, (X,y) in data_dict.items()}
+ 
