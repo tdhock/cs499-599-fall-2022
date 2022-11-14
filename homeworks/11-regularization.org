@@ -45,7 +45,7 @@ learner_instance = MyCV(
 learner_instance.fit(train_features, train_labels)
 #+end_center
 
-The fit method should use K-fold cross-validation to do K splits of
+The fit method should use cross-validation to split
 the train data into subtrain/validation sets. For each split and
 hyper-parameter dictionary you should call estimator.fit on the
 subtrain data and then compute the zero-one loss on the
