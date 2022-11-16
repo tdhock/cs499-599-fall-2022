@@ -76,7 +76,7 @@ that week, 11:59PM.
 - Nov 7, [[file:homeworks/11-regularization.org][Homework week 11]]: regularizing neural networks.
   - Reading [[https://www.deeplearningbook.org/contents/regularization.html][DL7]].
 - Nov 14, [[file:homeworks/12-optimization.org][Homework week 12]]: optimization.
-  - [[file:slides/11-optimization.pdf][Slides]].
+  - [[file:slides/12-optimization.pdf][Slides]].
   - Reading [[https://www.deeplearningbook.org/contents/optimization.html][DL8]].
 - Nov 21, [[file:homeworks/13-convolutional-networks.org][Homework week 13]]: convolutional networks.
   - Reading [[https://www.deeplearningbook.org/contents/convnets.html][DL9]].
