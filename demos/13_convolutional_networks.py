@@ -92,9 +92,12 @@ batch_size = 20
 subtrain_dataloader = torch.utils.data.DataLoader(
     subtrain_dataset, batch_size=batch_size, shuffle=True)
 for batch_features, batch_labels in subtrain_dataloader:
-    print(batch_features.shape)
+    print(batch_features.shape)    
 conv_layer = torch.nn.Conv2d(
-    in_channels=1, out_channels=2, kernel_size=4, stride=4)
+    in_channels=1, out_channels=200, kernel_size=4, stride=4, padding=0)
+def get_n_params(module):
+    return sum(
+        [math.prod(list(p.shape)) for p in module.parameters()])
 batch_labels.shape
 batch_features.shape
 conv_output = conv_layer(batch_features)
@@ -105,11 +108,63 @@ act_out.shape
 # maybe max pooling.
 flatten_instance = torch.nn.Flatten(start_dim=1)
 flat_out = flatten_instance(act_out)
-flat_out.shape
+n_data, n_hidden = flat_out.shape
+conv_fully_connected = torch.nn.Linear(n_hidden, 100)
+n_conv_params = get_n_params(conv_layer)+get_n_params(conv_fully_connected)
+fully_out = fully_connected(flat_out)
+fully_out.shape
+
+batch_features_flat = flatten_instance(batch_features)
+n_data, n_input_features = batch_features_flat.shape
+import math
+n_big_hidden = math.floor(n_conv_weights/(n_input_features+1))
+big_linear = torch.nn.Linear(n_input_features, n_big_hidden)
 
 model = NNet(100)
 conv_model = ConvNet()
 conv_model(batch_features)
+
+class CleverConvNet(torch.nn.Module):
+    def __init__(self):
+        super(CleverConvNet, self).__init__()
+        self.conv_seq = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=1, out_channels=20, kernel_size=4, stride=4),
+            torch.nn.ReLU(),
+            torch.nn.Flatten(start_dim=1),
+            )
+        conv_seq_out = self.conv_seq(batch_features)
+        n_data, conv_hidden = conv_seq_out.shape
+        linear_hidden = 100
+        self.linear_seq = torch.nn.Sequential(
+            torch.nn.Linear(conv_hidden,linear_hidden),
+            torch.nn.ReLU(),
+            torch.nn.Linear(linear_hidden,1))
+        self.seq = torch.nn.Sequential(
+            self.conv_seq,
+            self.linear_seq)
+    def forward(self, feature_mat):
+        return self.seq(feature_mat)
+clever = CleverConvNet()
+get_n_params(clever)
+
+class Net(torch.nn.Module):
+    def __init__(self, *units_per_layer):
+        super(Net, self).__init__()
+        seq_args = []
+        for layer_i in range(len(units_per_layer)-1):
+            units_in = units_per_layer[layer_i]
+            units_out = units_per_layer[layer_i+1]
+            seq_args.append(
+                torch.nn.Linear(units_in, units_out))
+            if layer_i != len(units_per_layer)-2:
+                seq_args.append(torch.nn.ReLU())
+        self.stack = torch.nn.Sequential(*seq_args)
+    def forward(self, feature_mat):
+        return self.stack(feature_mat)
+net_hidden = 93
+net=Net(ncol, net_hidden, net_hidden, 1)
+get_n_params(net)
 
 batch_reshaped = batch_features.reshape(
     batch_features.shape[0], zip_features.shape[1])
