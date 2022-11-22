@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
-
+import os
 # work-around for rendering plots under windows, which hangs within
 # emacs python shell: instead write a PNG file and view in browser.
 import webbrowser
-import os
 on_windows = os.name == "nt"
 in_render = r.in_render if 'r' in dir() else False
-using_agg = True
+using_agg = on_windows and not in_render
 if using_agg:
     import matplotlib
     matplotlib.use("agg")
@@ -18,23 +17,17 @@ def show(g):
     webbrowser.open('tmp.png')
 
 
-spam_df = pd.read_csv(
-    "~/teaching/cs499-599-fall-2022/data/spam.data",
+zip_df = pd.read_csv(
+    "~/teaching/cs570-spring-2022/data/zip.train.gz",
     header=None,
     sep=" ")
-
-spam_features = spam_df.iloc[:,:-1].to_numpy()
-spam_labels = spam_df.iloc[:,-1].to_numpy()
-# 1. feature scaling
-spam_mean = spam_features.mean(axis=0)
-spam_sd = np.sqrt(spam_features.var(axis=0))
-scaled_features = (spam_features-spam_mean)/spam_sd
-scaled_features.mean(axis=0)
-scaled_features.var(axis=0)
-
+zip_71 = zip_df[ zip_df.iloc[:,0].isin([7,1]) ]
+zip_features = zip_71.iloc[:,1:257].to_numpy()
+zip_labels_71 = zip_71.iloc[:,0].to_numpy()
+zip_labels = np.where(zip_labels_71==1, 1, 0)
 np.random.seed(1)
 n_folds = 5
-fold_vec = np.random.randint(low=0, high=n_folds, size=spam_labels.size)
+fold_vec = np.random.randint(low=0, high=n_folds, size=zip_labels.size)
 validation_fold = 0
 is_set_dict = {
     "validation":fold_vec == validation_fold,
@@ -46,9 +39,9 @@ set_features = {}
 set_labels = {}
 for set_name, is_set in is_set_dict.items():
     set_features[set_name] = torch.from_numpy(
-        scaled_features[is_set,:]).float()
+        zip_features[is_set,:]).float()
     set_labels[set_name] = torch.from_numpy(
-        spam_labels[is_set]).float()
+        zip_labels[is_set]).float()
 {set_name:array.shape for set_name, array in set_features.items()}
 
 nrow, ncol = set_features["subtrain"].shape
@@ -62,21 +55,66 @@ class NNet(torch.nn.Module):
     def forward(self, feature_mat):
         return self.seq(feature_mat)
 
+n_pixels = int(np.sqrt(ncol))
+class ConvNet(torch.nn.Module):
+    def __init__(self, out_channels=50, kernel_size=3):
+        super(ConvNet, self).__init__()
+        self.seq = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=1, out_channels=2, kernel_size=4, stride=4),
+            torch.nn.ReLU(),
+            # maybe max pooling.
+            # another convolutional layer.
+            torch.nn.Flatten(start_dim=1),
+            torch.nn.Linear(32,10),
+            torch.nn.ReLU(),
+            torch.nn.Linear(10,1))
+    def forward(self, feature_mat):
+        return self.seq(feature_mat)
+
 loss_fun = torch.nn.BCEWithLogitsLoss()
-class CSV(torch.utils.data.Dataset):
+class CSVtoImage(torch.utils.data.Dataset):
     def __init__(self, features, labels):
         self.features = features
         self.labels = labels
     def __getitem__(self, item):
-        return self.features[item,:], self.labels[item]
+        return (
+            self.features[item,:].reshape(1,n_pixels,n_pixels),
+            self.labels[item])
     def __len__(self):
         return len(self.labels)
 
-subtrain_dataset = CSV(set_features["subtrain"], set_labels["subtrain"])
+subtrain_dataset = CSVtoImage(
+    set_features["subtrain"], set_labels["subtrain"])
+[item.shape for item in subtrain_dataset[0]]
 batch_size = 20
 # random path through batches of subtrain data when shuffle=True
 subtrain_dataloader = torch.utils.data.DataLoader(
     subtrain_dataset, batch_size=batch_size, shuffle=True)
+for batch_features, batch_labels in subtrain_dataloader:
+    print(batch_features.shape)
+conv_layer = torch.nn.Conv2d(
+    in_channels=1, out_channels=2, kernel_size=4, stride=4)
+batch_labels.shape
+batch_features.shape
+conv_output = conv_layer(batch_features)
+conv_output.shape
+activation = torch.nn.ReLU()
+act_out = activation(conv_output)
+act_out.shape
+# maybe max pooling.
+flatten_instance = torch.nn.Flatten(start_dim=1)
+flat_out = flatten_instance(act_out)
+flat_out.shape
+
+model = NNet(100)
+conv_model = ConvNet()
+conv_model(batch_features)
+
+batch_reshaped = batch_features.reshape(
+    batch_features.shape[0], zip_features.shape[1])
+batch_reshaped.shape
+model(batch_reshaped)
 
 def compute_loss(features, labels):
     pred_vec = model(features)
@@ -84,24 +122,24 @@ def compute_loss(features, labels):
         pred_vec.reshape(len(pred_vec)),
         labels)
 
-loss_df_dict = {}
+opt_lr = {
+    "SGD":0.05,
+    "Adagrad":0.005,
+    "Adam":0.0005,
+    "RMSprop":0.0005
+    }
 
+loss_df_dict = {}
 max_epochs=100
+weight_decay = 0
 n_hidden_units = 100
-for momentum in 0, 0.2, 0.5, 0.7, 0.9:
-    if (momentum, max_epochs, "validation") not in loss_df_dict:
+for opt_name in "SGD", "Adagrad", "RMSprop", "Adam":
+    if (opt_name, max_epochs, "validation") not in loss_df_dict:
+        torch.manual_seed(1)
         model = NNet(n_hidden_units)
+        optimizer_class = getattr(torch.optim, opt_name)
+        optimizer = optimizer_class(model.parameters(), lr=opt_lr[opt_name])
         for epoch in range(max_epochs+1):
-            # first update weights.
-            eps_0 = 0.1
-            eps_tau = 0.01
-            tau = 50
-            alpha = epoch/tau
-            lr = (1-alpha) * eps_0 + alpha * eps_tau if epoch < tau else eps_tau
-            print(epoch, lr)
-            optimizer = torch.optim.SGD(
-                model.parameters(), lr=lr,
-                momentum=momentum)
             for batch_features, batch_labels in subtrain_dataloader:
                 optimizer.zero_grad()
                 batch_loss = compute_loss(batch_features, batch_labels)
@@ -113,20 +151,19 @@ for momentum in 0, 0.2, 0.5, 0.7, 0.9:
                 label_vec = set_labels[set_name]
                 set_loss = compute_loss(feature_mat, label_vec)
                 set_df = pd.DataFrame({
-                    "momentum":momentum,
+                    "opt_name":opt_name,
                     "set_name":set_name,
                     "loss":set_loss.detach().numpy(),
                     "epoch":epoch,
                     }, index=[0])
+                print(set_df)
                 loss_df_dict[
-                    (momentum,epoch,set_name)
+                    (opt_name,epoch,set_name)
                 ] = set_df
 loss_df = pd.concat(loss_df_dict.values())
 # DF.groupby("set")["correct"].mean()*100
 validation_df = loss_df.query('set_name == "validation"')
-best_validation = pd.DataFrame(dict(
-    validation_df.iloc[validation_df["loss"].argmin(), :]
-), index=[0])
+validation_df.iloc[validation_df["loss"].argmin(), :]
 
 import plotnine as p9
 gg = p9.ggplot()+\
@@ -137,12 +174,5 @@ gg = p9.ggplot()+\
             color="set_name"
         ),
         data=loss_df)+\
-    p9.geom_point(
-        p9.aes(
-            x="epoch",
-            y="loss",
-            color="set_name"
-        ),
-        data=best_validation)+\
-    p9.facet_grid(". ~ momentum", labeller="label_both")
+    p9.facet_grid(". ~ opt_name", labeller="label_both", scales="free")
 show(gg)
