@@ -45,9 +45,9 @@ for set_name, is_set in is_set_dict.items():
 {set_name:array.shape for set_name, array in set_features.items()}
 
 nrow, ncol = set_features["subtrain"].shape
-class NNet(torch.nn.Module):
+class FullyConnected(torch.nn.Module):
     def __init__(self, n_hidden_units):
-        super(NNet, self).__init__()
+        super(FullyConnected, self).__init__()
         self.seq = torch.nn.Sequential(
             torch.nn.Linear(ncol, n_hidden_units),
             torch.nn.ReLU(),
@@ -57,16 +57,16 @@ class NNet(torch.nn.Module):
 
 n_pixels = int(np.sqrt(ncol))
 class ConvNet(torch.nn.Module):
-    def __init__(self, out_channels=50, kernel_size=3):
+    def __init__(self):
         super(ConvNet, self).__init__()
         self.seq = torch.nn.Sequential(
             torch.nn.Conv2d(
-                in_channels=1, out_channels=2, kernel_size=4, stride=4),
+                in_channels=1, out_channels=20, kernel_size=4, stride=4),
             torch.nn.ReLU(),
             # maybe max pooling.
             # another convolutional layer.
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(32,10),
+            torch.nn.Linear(320,10),
             torch.nn.ReLU(),
             torch.nn.Linear(10,1))
     def forward(self, feature_mat):
@@ -94,10 +94,7 @@ subtrain_dataloader = torch.utils.data.DataLoader(
 for batch_features, batch_labels in subtrain_dataloader:
     print(batch_features.shape)    
 conv_layer = torch.nn.Conv2d(
-    in_channels=1, out_channels=200, kernel_size=4, stride=4, padding=0)
-def get_n_params(module):
-    return sum(
-        [math.prod(list(p.shape)) for p in module.parameters()])
+    in_channels=1, out_channels=20, kernel_size=4, stride=4, padding=0)
 batch_labels.shape
 batch_features.shape
 conv_output = conv_layer(batch_features)
@@ -105,22 +102,28 @@ conv_output.shape
 activation = torch.nn.ReLU()
 act_out = activation(conv_output)
 act_out.shape
-# maybe max pooling.
+pooling_layer = torch.nn.MaxPool2d(kernel_size=2, stride=1)
+pooling_out = pooling_layer(act_out)
+pooling_out.shape
 flatten_instance = torch.nn.Flatten(start_dim=1)
-flat_out = flatten_instance(act_out)
+flat_out = flatten_instance(pooling_out)
 n_data, n_hidden = flat_out.shape
 conv_fully_connected = torch.nn.Linear(n_hidden, 100)
-n_conv_params = get_n_params(conv_layer)+get_n_params(conv_fully_connected)
-fully_out = fully_connected(flat_out)
+fully_out = conv_fully_connected(flat_out)
 fully_out.shape
+
+[p.shape for p in conv_layer.parameters()]
+import math
+def get_n_params(module):
+    return sum(
+        [math.prod(list(p.shape)) for p in module.parameters()])
+n_conv_params = get_n_params(conv_layer)+get_n_params(conv_fully_connected)
 
 batch_features_flat = flatten_instance(batch_features)
 n_data, n_input_features = batch_features_flat.shape
-import math
 n_big_hidden = math.floor(n_conv_weights/(n_input_features+1))
 big_linear = torch.nn.Linear(n_input_features, n_big_hidden)
 
-model = NNet(100)
 conv_model = ConvNet()
 conv_model(batch_features)
 
@@ -135,7 +138,8 @@ class CleverConvNet(torch.nn.Module):
             )
         conv_seq_out = self.conv_seq(batch_features)
         n_data, conv_hidden = conv_seq_out.shape
-        linear_hidden = 100
+        print(conv_hidden)
+        linear_hidden = 10
         self.linear_seq = torch.nn.Sequential(
             torch.nn.Linear(conv_hidden,linear_hidden),
             torch.nn.ReLU(),
@@ -147,11 +151,13 @@ class CleverConvNet(torch.nn.Module):
         return self.seq(feature_mat)
 clever = CleverConvNet()
 get_n_params(clever)
+get_n_params(clever.conv_seq)
+get_n_params(clever.linear_seq)
 
 class Net(torch.nn.Module):
     def __init__(self, *units_per_layer):
         super(Net, self).__init__()
-        seq_args = []
+        seq_args = [torch.nn.Flatten(start_dim=1)]
         for layer_i in range(len(units_per_layer)-1):
             units_in = units_per_layer[layer_i]
             units_out = units_per_layer[layer_i+1]
@@ -162,14 +168,11 @@ class Net(torch.nn.Module):
         self.stack = torch.nn.Sequential(*seq_args)
     def forward(self, feature_mat):
         return self.stack(feature_mat)
-net_hidden = 93
+net_hidden = 13
 net=Net(ncol, net_hidden, net_hidden, 1)
 get_n_params(net)
-
-batch_reshaped = batch_features.reshape(
-    batch_features.shape[0], zip_features.shape[1])
-batch_reshaped.shape
-model(batch_reshaped)
+net(batch_features)
+clever(batch_features)
 
 def compute_loss(features, labels):
     pred_vec = model(features)
@@ -187,11 +190,14 @@ opt_lr = {
 loss_df_dict = {}
 max_epochs=100
 weight_decay = 0
-n_hidden_units = 100
-for opt_name in "SGD", "Adagrad", "RMSprop", "Adam":
-    if (opt_name, max_epochs, "validation") not in loss_df_dict:
+opt_name="SGD"
+model_dict = {
+    "convolutional":CleverConvNet(),
+    "fully_connected":Net(ncol, net_hidden, net_hidden, 1),
+}
+for model_name, model in model_dict.items():   
+    if (model_name, max_epochs, "validation") not in loss_df_dict:
         torch.manual_seed(1)
-        model = NNet(n_hidden_units)
         optimizer_class = getattr(torch.optim, opt_name)
         optimizer = optimizer_class(model.parameters(), lr=opt_lr[opt_name])
         for epoch in range(max_epochs+1):
@@ -204,16 +210,18 @@ for opt_name in "SGD", "Adagrad", "RMSprop", "Adam":
             for set_name in set_features:
                 feature_mat = set_features[set_name]
                 label_vec = set_labels[set_name]
-                set_loss = compute_loss(feature_mat, label_vec)
+                feature_tensor = feature_mat.reshape(
+                    len(label_vec),1,n_pixels,n_pixels)
+                set_loss = compute_loss(feature_tensor, label_vec)
                 set_df = pd.DataFrame({
-                    "opt_name":opt_name,
+                    "model_name":model_name,
                     "set_name":set_name,
                     "loss":set_loss.detach().numpy(),
                     "epoch":epoch,
                     }, index=[0])
                 print(set_df)
                 loss_df_dict[
-                    (opt_name,epoch,set_name)
+                    (model_name,epoch,set_name)
                 ] = set_df
 loss_df = pd.concat(loss_df_dict.values())
 # DF.groupby("set")["correct"].mean()*100
@@ -229,5 +237,5 @@ gg = p9.ggplot()+\
             color="set_name"
         ),
         data=loss_df)+\
-    p9.facet_grid(". ~ opt_name", labeller="label_both", scales="free")
+    p9.facet_grid(". ~ model_name", labeller="label_both", scales="free")
 show(gg)
