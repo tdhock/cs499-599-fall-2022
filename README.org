@@ -81,6 +81,7 @@ that week, 11:59PM.
 - Nov 21, [[file:homeworks/13-convolutional-networks.org][Homework week 13]]: convolutional networks.
   - Reading [[https://www.deeplearningbook.org/contents/convnets.html][DL9]].
 - Nov 28, [[file:homeworks/14-cluster-gpu.org][Homework week 14]]: learning on a cluster/GPU.
+  - [[file:slides/torch-part1/06-backprop.pdf][Slides]].
 - Dec 5, reading week, exam review TODO DATE.
 - Final exam, Weds Dec 14, 8-9:30AM.
 

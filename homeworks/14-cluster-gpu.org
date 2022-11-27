@@ -65,10 +65,6 @@ First to get access to conda on the cluster you
 
 module load anaconda3
 
-conda init
-
-bash (or re-login)
-
 conda env create -f https://raw.githubusercontent.com/tdhock/cs499-599-fall-2022/master/environment.yml
 
 conda activate cs499f22
@@ -103,9 +99,28 @@ cuda=False on cn68
 cuda=True on cn32
 #+end_src
 
+When you use the gres argument, you get a GPU, and torch knows about
+it (cuda=True above). 
+
+Below you can specify time, memory, and number of CPUs. --pty bash
+means to start an interactive shell on a compute node (don't do this
+when you ask for GPU, since it will monopolize the GPUs, and they
+should be shared).
+
 #+begin_src shell-script
-srun -t 24:00:00 --gres=gpu:tesla:1 --mem=8GB --cpus-per-task=1 --pty bash
+srun -t 24:00:00 --mem=8GB --cpus-per-task=1 --pty bash
 #+end_src
+
+** Homework assignment
+
+Your goal is to create a python script for training and testing neural
+networks, and time it on both the CPU and GPU. See if you can find a
+configuration of model size / batch size / etc that results in decent
+speedups using the GPU. 
+- For the neural network code, use one of your previous homeworks.
+- Make sure to do some analysis of the test accuracy numbers you get
+  on the CPU vs GPU. Are they the same? If not, explain why.
+- To do the timings, you can use the =time= command as below:
 
 #+begin_src
 (emacs1) th798@wind:~$ time srun -t 1:00:00 --gres=gpu:tesla:1 --mem=8GB --cpus-per-task=1 python torch_test.py
