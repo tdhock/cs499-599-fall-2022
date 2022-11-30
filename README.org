@@ -83,7 +83,7 @@ that week, 11:59PM.
 - Nov 28, [[file:homeworks/14-cluster-gpu.org][Homework week 14]]: learning on a cluster/GPU.
   - [[file:slides/torch-part1/06-backprop.pdf][My Slides]].
   - [[https://rcdata.nau.edu/hpcpub/workshops/odintro.pdf][Monsoon slides]].
-- Dec 5, reading week, exam review TODO DATE.
+- Dec 5, reading week, exam review Weds Dec 7, 9:10-10AM.
 - Final exam, Weds Dec 14, 8-9:30AM.
 
 ** Rubric for homeworks
