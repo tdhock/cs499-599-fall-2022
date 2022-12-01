@@ -1,0 +1,11 @@
+name: vision
+channels:
+  - defaults
+dependencies:
+  - python=3.9.12
+  - pip=22.1.2
+  - pip:
+    - plotnine==0.10.1
+    - scikit-learn==1.1.1
+    - torchvision==0.14.0
+

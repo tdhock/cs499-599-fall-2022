@@ -121,3 +121,64 @@ real    0m2.319s
 user    0m0.015s
 sys     0m0.002s
 #+end_src
+
+** FAQ
+
+how many cores does my GPU have? Ask torch what kind of GPU it is:
+
+#+begin_src python
+>>> torch.cuda.get_device_properties(0)
+_CudaDeviceProperties(name='Tesla K80', major=3, minor=7, total_memory=11441MB, multi_processor_count=13)
+#+end_src
+
+[[https://www.nvidia.com/en-gb/data-center/tesla-k80/][Tesla K80]] has "4992 NVIDIA CUDA cores with a dual-GPU design"
+
+how much GPU memory am I using? Run the following, after having copied
+at least one tensor to the cuda device.
+
+#+begin_src python
+>>> print(torch.cuda.memory_summary())
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |     512 B  |     512 B  |     512 B  |       0 B  |
+|       from large pool |       0 B  |       0 B  |       0 B  |       0 B  |
+|       from small pool |     512 B  |     512 B  |     512 B  |       0 B  |
+|---------------------------------------------------------------------------|
+| Active memory         |     512 B  |     512 B  |     512 B  |       0 B  |
+|       from large pool |       0 B  |       0 B  |       0 B  |       0 B  |
+|       from small pool |     512 B  |     512 B  |     512 B  |       0 B  |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |    2048 KB |    2048 KB |    2048 KB |       0 B  |
+|       from large pool |       0 KB |       0 KB |       0 KB |       0 B  |
+|       from small pool |    2048 KB |    2048 KB |    2048 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |    2047 KB |    2047 KB |    2047 KB |       0 B  |
+|       from large pool |       0 KB |       0 KB |       0 KB |       0 B  |
+|       from small pool |    2047 KB |    2047 KB |    2047 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| Allocations           |       1    |       1    |       1    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |       1    |       1    |       1    |       0    |
+|---------------------------------------------------------------------------|
+| Active allocs         |       1    |       1    |       1    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |       1    |       1    |       1    |       0    |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |       1    |       1    |       1    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |       1    |       1    |       1    |       0    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |       1    |       1    |       1    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |       1    |       1    |       1    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+#+end_src
