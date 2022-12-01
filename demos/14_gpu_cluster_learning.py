@@ -1,6 +1,12 @@
 import pandas as pd
 import numpy as np
 import os
+import torch
+none_or_str = os.getenv("SLURM_JOB_CPUS_PER_NODE")
+CPUS = int(1 if none_or_str is None else none_or_str)
+torch.set_num_interop_threads(CPUS)
+torch.set_num_threads(CPUS)
+device = "cuda" if torch.cuda.is_available() else "cpu"
 # work-around for rendering plots under windows, which hangs within
 # emacs python shell: instead write a PNG file and view in browser.
 import webbrowser
@@ -18,13 +24,19 @@ def show(g):
 
 
 zip_df = pd.read_csv(
-    "~/teaching/cs570-spring-2022/data/zip.train.gz",
+    "~/teaching/cs499-599-fall-2022/data/zip.train.gz",
     header=None,
     sep=" ")
 zip_71 = zip_df[ zip_df.iloc[:,0].isin([7,1]) ]
-zip_features = zip_71.iloc[:,1:257].to_numpy()
 zip_labels_71 = zip_71.iloc[:,0].to_numpy()
-zip_labels = np.where(zip_labels_71==1, 1, 0)
+zip_numpy_dict = {
+    "X" : zip_71.iloc[:,1:257].to_numpy(),
+    "y" : np.where(zip_labels_71==1, 1, 0),
+    }
+zip_tensor_dict = {
+    data_type:torch.from_numpy(data_array).float().to(device)
+    for data_type, data_array in zip_numpy_dict.items()
+    }
 np.random.seed(1)
 n_folds = 5
 fold_vec = np.random.randint(low=0, high=n_folds, size=zip_labels.size)
@@ -34,17 +46,16 @@ is_set_dict = {
     "subtrain":fold_vec != validation_fold,
 }
 
-import torch
-set_features = {}
-set_labels = {}
+set_data_dict = {}
 for set_name, is_set in is_set_dict.items():
-    set_features[set_name] = torch.from_numpy(
-        zip_features[is_set,:]).float()
-    set_labels[set_name] = torch.from_numpy(
-        zip_labels[is_set]).float()
-{set_name:array.shape for set_name, array in set_features.items()}
+    set_data_dict[set_name] = {
+        "X":zip_tensor_dict["X"][is_set,:],
+        "y":zip_tensor_dict["y"][is_set]
+    }        
+{set_name:x_and_y["X"].shape for set_name, x_and_y in set_data_dict.items()}
+learner.fit(**set_data_dict["train"])
 
-nrow, ncol = set_features["subtrain"].shape
+nrow, ncol = zip_tensor_dict["X"].shape
 class FullyConnected(torch.nn.Module):
     def __init__(self, n_hidden_units):
         super(FullyConnected, self).__init__()
@@ -74,9 +85,9 @@ class ConvNet(torch.nn.Module):
 
 loss_fun = torch.nn.BCEWithLogitsLoss()
 class CSVtoImage(torch.utils.data.Dataset):
-    def __init__(self, features, labels):
-        self.features = features
-        self.labels = labels
+    def __init__(self, X, y):
+        self.features = X
+        self.labels = y
     def __getitem__(self, item):
         return (
             self.features[item,:].reshape(1,n_pixels,n_pixels),
@@ -84,8 +95,7 @@ class CSVtoImage(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.labels)
 
-subtrain_dataset = CSVtoImage(
-    set_features["subtrain"], set_labels["subtrain"])
+subtrain_dataset = CSVtoImage(**set_data_dict["subtrain"])
 [item.shape for item in subtrain_dataset[0]]
 batch_size = 20
 # random path through batches of subtrain data when shuffle=True
@@ -93,37 +103,6 @@ subtrain_dataloader = torch.utils.data.DataLoader(
     subtrain_dataset, batch_size=batch_size, shuffle=True)
 for batch_features, batch_labels in subtrain_dataloader:
     print(batch_features.shape)    
-conv_layer = torch.nn.Conv2d(
-    in_channels=1, out_channels=20, kernel_size=4, stride=4, padding=0)
-batch_labels.shape
-batch_features.shape
-conv_output = conv_layer(batch_features)
-conv_output.shape
-activation = torch.nn.ReLU()
-act_out = activation(conv_output)
-act_out.shape
-pooling_layer = torch.nn.MaxPool2d(kernel_size=2, stride=1)
-pooling_out = pooling_layer(act_out)
-pooling_out.shape
-flatten_instance = torch.nn.Flatten(start_dim=1)
-flat_out = flatten_instance(pooling_out)
-n_data, n_hidden = flat_out.shape
-conv_fully_connected = torch.nn.Linear(n_hidden, 100)
-fully_out = conv_fully_connected(flat_out)
-fully_out.shape
-
-[p.shape for p in conv_layer.parameters()]
-import math
-def get_n_params(module):
-    return sum(
-        [math.prod(list(p.shape)) for p in module.parameters()])
-n_conv_params = get_n_params(conv_layer)+get_n_params(conv_fully_connected)
-
-batch_features_flat = flatten_instance(batch_features)
-n_data, n_input_features = batch_features_flat.shape
-n_big_hidden = math.floor(n_conv_weights/(n_input_features+1))
-big_linear = torch.nn.Linear(n_input_features, n_big_hidden)
-
 conv_model = ConvNet()
 conv_model(batch_features)
 
@@ -150,9 +129,6 @@ class CleverConvNet(torch.nn.Module):
     def forward(self, feature_mat):
         return self.seq(feature_mat)
 clever = CleverConvNet()
-get_n_params(clever)
-get_n_params(clever.conv_seq)
-get_n_params(clever.linear_seq)
 
 class Net(torch.nn.Module):
     def __init__(self, *units_per_layer):
@@ -170,7 +146,6 @@ class Net(torch.nn.Module):
         return self.stack(feature_mat)
 net_hidden = 13
 net=Net(ncol, net_hidden, net_hidden, 1)
-get_n_params(net)
 net(batch_features)
 clever(batch_features)
 
@@ -191,9 +166,13 @@ loss_df_dict = {}
 max_epochs=100
 weight_decay = 0
 opt_name="SGD"
-model_dict = {
+cpu_model_dict = {
     "convolutional":CleverConvNet(),
     "fully_connected":Net(ncol, net_hidden, net_hidden, 1),
+}
+dev_model_dict = {
+    model_name:model.to(device)
+    for model_name, model in cpu_model_dict.items()
 }
 for model_name, model in model_dict.items():   
     if (model_name, max_epochs, "validation") not in loss_df_dict:
@@ -207,9 +186,9 @@ for model_name, model in model_dict.items():
                 batch_loss.backward()
                 optimizer.step()
             # then compute subtrain/validation loss.
-            for set_name in set_features:
-                feature_mat = set_features[set_name]
-                label_vec = set_labels[set_name]
+            for set_name, x_and_y in set_data_dict.items():
+                feature_mat = x_and_y["X"]
+                label_vec = x_and_y["y"]
                 feature_tensor = feature_mat.reshape(
                     len(label_vec),1,n_pixels,n_pixels)
                 set_loss = compute_loss(feature_tensor, label_vec)
