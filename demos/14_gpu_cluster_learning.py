@@ -39,7 +39,7 @@ zip_tensor_dict = {
     }
 np.random.seed(1)
 n_folds = 5
-fold_vec = np.random.randint(low=0, high=n_folds, size=zip_labels.size)
+fold_vec = np.random.randint(low=0, high=n_folds, size=zip_labels_71.size)
 validation_fold = 0
 is_set_dict = {
     "validation":fold_vec == validation_fold,
@@ -53,36 +53,10 @@ for set_name, is_set in is_set_dict.items():
         "y":zip_tensor_dict["y"][is_set]
     }        
 {set_name:x_and_y["X"].shape for set_name, x_and_y in set_data_dict.items()}
-learner.fit(**set_data_dict["train"])
+##learner.fit(**set_data_dict["train"])
 
 nrow, ncol = zip_tensor_dict["X"].shape
-class FullyConnected(torch.nn.Module):
-    def __init__(self, n_hidden_units):
-        super(FullyConnected, self).__init__()
-        self.seq = torch.nn.Sequential(
-            torch.nn.Linear(ncol, n_hidden_units),
-            torch.nn.ReLU(),
-            torch.nn.Linear(n_hidden_units, 1))
-    def forward(self, feature_mat):
-        return self.seq(feature_mat)
-
 n_pixels = int(np.sqrt(ncol))
-class ConvNet(torch.nn.Module):
-    def __init__(self):
-        super(ConvNet, self).__init__()
-        self.seq = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=1, out_channels=20, kernel_size=4, stride=4),
-            torch.nn.ReLU(),
-            # maybe max pooling.
-            # another convolutional layer.
-            torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(320,10),
-            torch.nn.ReLU(),
-            torch.nn.Linear(10,1))
-    def forward(self, feature_mat):
-        return self.seq(feature_mat)
-
 loss_fun = torch.nn.BCEWithLogitsLoss()
 class CSVtoImage(torch.utils.data.Dataset):
     def __init__(self, X, y):
@@ -103,22 +77,18 @@ subtrain_dataloader = torch.utils.data.DataLoader(
     subtrain_dataset, batch_size=batch_size, shuffle=True)
 for batch_features, batch_labels in subtrain_dataloader:
     print(batch_features.shape)    
-conv_model = ConvNet()
-conv_model(batch_features)
-
 class CleverConvNet(torch.nn.Module):
     def __init__(self):
         super(CleverConvNet, self).__init__()
         self.conv_seq = torch.nn.Sequential(
             torch.nn.Conv2d(
-                in_channels=1, out_channels=20, kernel_size=4, stride=4),
+                in_channels=1, out_channels=200, kernel_size=4, stride=4),
             torch.nn.ReLU(),
             torch.nn.Flatten(start_dim=1),
-            )
+            ).to(device)
         conv_seq_out = self.conv_seq(batch_features)
         n_data, conv_hidden = conv_seq_out.shape
-        print(conv_hidden)
-        linear_hidden = 10
+        linear_hidden = 1000
         self.linear_seq = torch.nn.Sequential(
             torch.nn.Linear(conv_hidden,linear_hidden),
             torch.nn.ReLU(),
@@ -128,8 +98,6 @@ class CleverConvNet(torch.nn.Module):
             self.linear_seq)
     def forward(self, feature_mat):
         return self.seq(feature_mat)
-clever = CleverConvNet()
-
 class Net(torch.nn.Module):
     def __init__(self, *units_per_layer):
         super(Net, self).__init__()
@@ -144,26 +112,15 @@ class Net(torch.nn.Module):
         self.stack = torch.nn.Sequential(*seq_args)
     def forward(self, feature_mat):
         return self.stack(feature_mat)
-net_hidden = 13
-net=Net(ncol, net_hidden, net_hidden, 1)
-net(batch_features)
-clever(batch_features)
-
+net_hidden = 130
 def compute_loss(features, labels):
     pred_vec = model(features)
     return loss_fun(
         pred_vec.reshape(len(pred_vec)),
         labels)
 
-opt_lr = {
-    "SGD":0.05,
-    "Adagrad":0.005,
-    "Adam":0.0005,
-    "RMSprop":0.0005
-    }
-
 loss_df_dict = {}
-max_epochs=100
+max_epochs=400
 weight_decay = 0
 opt_name="SGD"
 cpu_model_dict = {
@@ -174,11 +131,13 @@ dev_model_dict = {
     model_name:model.to(device)
     for model_name, model in cpu_model_dict.items()
 }
-for model_name, model in model_dict.items():   
+from time import time
+before_grad_desc = time()
+for model_name, model in dev_model_dict.items():   
     if (model_name, max_epochs, "validation") not in loss_df_dict:
         torch.manual_seed(1)
         optimizer_class = getattr(torch.optim, opt_name)
-        optimizer = optimizer_class(model.parameters(), lr=opt_lr[opt_name])
+        optimizer = optimizer_class(model.parameters(), lr=0.1)
         for epoch in range(max_epochs+1):
             for batch_features, batch_labels in subtrain_dataloader:
                 optimizer.zero_grad()
@@ -195,17 +154,24 @@ for model_name, model in model_dict.items():
                 set_df = pd.DataFrame({
                     "model_name":model_name,
                     "set_name":set_name,
-                    "loss":set_loss.detach().numpy(),
+                    "loss":set_loss.detach().cpu().numpy(),
                     "epoch":epoch,
                     }, index=[0])
                 print(set_df)
                 loss_df_dict[
                     (model_name,epoch,set_name)
                 ] = set_df
+after_grad_desc = time()
+elapsed_seconds = after_grad_desc - before_grad_desc
 loss_df = pd.concat(loss_df_dict.values())
 # DF.groupby("set")["correct"].mean()*100
 validation_df = loss_df.query('set_name == "validation"')
 validation_df.iloc[validation_df["loss"].argmin(), :]
+print("%s seconds of gradient descent loop"%elapsed_seconds)
+
+loss_df.to_csv(device+".csv")
+
+loss_df = pd.read_csv("~/teaching/cs499-599-fall-2022/demos/cuda.csv")
 
 import plotnine as p9
 gg = p9.ggplot()+\
